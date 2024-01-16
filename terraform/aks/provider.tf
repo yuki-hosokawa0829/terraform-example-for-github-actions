@@ -5,6 +5,10 @@ terraform {
       version = "~>2.36.0"
       source  = "hashicorp/azurerm"
     }
+    azapi = {
+      version = "~>1.0.0"
+      source = "azure/azapi"
+    }
   }
   backend "azurerm" {
     resource_group_name  = "tamopstfstates"
