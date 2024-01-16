@@ -110,7 +110,7 @@ jobs:
           manifests: |
              ${{ env.manifest_path }}
 
-  delete: 
+  delete:
     name: 'Delete AKS Cluster'
     needs: [terraform, build]
     if: failure()
@@ -123,6 +123,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
     - name: 'Terraform Plan'
       uses: hashicorp/terraform-github-actions@master
       with:
