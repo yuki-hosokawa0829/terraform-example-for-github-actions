@@ -74,7 +74,7 @@ jobs:
   build:
     name: 'Apply AKS manifest'
     needs: terraform
-    if: success() && needs.terraform.outputs.outcome == 'success'
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code 
