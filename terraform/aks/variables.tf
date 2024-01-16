@@ -12,3 +12,7 @@ variable "aks_cluster_name" {
   type    = string
   default = "ndsou-test-tfaks01-cl"
 }
+
+locals {
+    username = "ndsouadmin"
+}
