@@ -5,7 +5,7 @@ variable "resource_group_name" {
 
 variable "resource_location" {
   type    = string
-  default = "japaneast"
+  default = "japanwest"
 }
 
 variable "aks_cluster_name" {
