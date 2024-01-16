@@ -89,7 +89,7 @@ jobs:
         with:
           client-id: ${{ secrets.AZURE_AD_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_AD_TENANT_ID }}
-          
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Set AKS context
         id: set-context
@@ -132,7 +132,7 @@ jobs:
         tf_actions_version: ${{ env.TF_VERSION }}
         tf_actions_subcommand: 'init'
         tf_actions_working_dir: "./terraform/aks"
-        
+
     - name: 'Terraform Plan'
       uses: hashicorp/terraform-github-actions@master
       with:
