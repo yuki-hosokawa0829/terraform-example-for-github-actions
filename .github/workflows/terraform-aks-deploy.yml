@@ -1,4 +1,5 @@
 name: 'Terraform-AKS-Deploy'
+concurrency: ${{ github.workflow }}-${{ github.ref }}-${{ github.run_number }}
 
 on:
   push:
