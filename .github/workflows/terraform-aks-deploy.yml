@@ -4,7 +4,7 @@ on:
   push:
     branches:
     - main
-    paths: 'terraform/aks/**'
+    paths: ['terraform/aks/**', '.github/workflows/terraform-aks-deploy.yml']
   pull_request:
     paths: 'terraform/aks/**'
   
@@ -73,7 +73,7 @@ jobs:
 
   build:
     name: 'Apply AKS manifest'
-    needs: terraform
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code 
@@ -108,7 +108,8 @@ jobs:
 
   delete: 
     name: 'Delete AKS Cluster'
-    if: failure()
+    needs: terraform
+    if: failure() && needs.terraform.outputs.outcome == 'failure'
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
