@@ -11,6 +11,7 @@ on:
 env:
   resource_group: 'ndsou-test-tfaks01'
   cluster_name: 'ndsou-test-tfaks01-cl'
+  manifest_path: 'terraform/aks/manifest/aks-store-quickstart.yaml'
 
 jobs:
   terraform:
@@ -99,4 +100,4 @@ jobs:
         with:
           namespace: 'default'
           manifests: |
-             azure-vote-all-in-one-redis.yaml
+             ${{ env.manifest_path }}
