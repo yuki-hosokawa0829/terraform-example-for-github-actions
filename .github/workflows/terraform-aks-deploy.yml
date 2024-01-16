@@ -50,7 +50,7 @@ jobs:
       with:
         tf_actions_version: ${{ env.TF_VERSION }}
         tf_actions_subcommand: 'init'
-        tf_actions_working_dir: "./terraform/aks"
+        tf_actions_working_dir: "./terraform/akss"
 
     - name: 'Terraform Validate'
       uses: hashicorp/terraform-github-actions@master
@@ -113,7 +113,7 @@ jobs:
   delete:
     name: 'Delete AKS Cluster'
     needs: [terraform, build]
-    if: failure()
+    if: failure() && needs.build.result == 'failure'
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
