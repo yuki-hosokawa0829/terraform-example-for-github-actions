@@ -7,7 +7,10 @@ on:
     paths: ['terraform/aks/**', '.github/workflows/terraform-aks-deploy.yml']
   pull_request:
     paths: 'terraform/aks/**'
-  
+
+permissions:
+  id-token: write
+  contents: read
 
 env:
   resource_group: 'ndsou-test-tfaks01'
