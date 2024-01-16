@@ -8,9 +8,13 @@ on:
   pull_request:
     paths: 'terraform/aks/**'
 
+env:
+  resource_group: 'ndsou-test-tfaks01'
+  cluster_name: 'ndsou-test-tfaks01-cl'
+
 jobs:
   terraform:
-    name: 'Terraform'
+    name: 'Deploy AKS Cluster'
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
@@ -65,3 +69,34 @@ jobs:
         tf_actions_version: ${{ env.TF_VERSION }}
         tf_actions_subcommand: 'apply'
         tf_actions_working_dir: "./terraform/aks"
+
+  build:
+    name: 'Apply AKS manifest'
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code 
+        uses: actions/checkout@v3
+      - name: Azure login
+        id: login
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_AD_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_AD_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: '${{ env.resource_group }}' 
+          cluster-name: '${{ env.cluster_name }}'
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+      - name: Deploy to AKS
+        id: deploy-aks
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+          manifests: |
+             azure-vote-all-in-one-redis.yaml
