@@ -112,7 +112,7 @@ jobs:
 
   delete: 
     name: 'Delete AKS Cluster'
-    needs: terraform
+    needs: [terraform, build]
     if: failure()
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
