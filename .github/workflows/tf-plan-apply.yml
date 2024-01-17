@@ -16,17 +16,15 @@ permissions:
   contents: read
   pull-requests: write
 
-#These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
-env:
-  ARM_CLIENT_ID: "${{ secrets.AZURE_AD_CLIENT_ID }}"
-  ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-  ARM_TENANT_ID: "${{ secrets.AZURE_AD_TENANT_ID }}"
-
 jobs:
   terraform-plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
     env:
+      #These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
+      ARM_CLIENT_ID: "${{ secrets.AZURE_AD_CLIENT_ID }}"
+      ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      ARM_TENANT_ID: "${{ secrets.AZURE_AD_TENANT_ID }}"
       #this is needed since we are running terraform with read-only permissions
       ARM_SKIP_PROVIDER_REGISTRATION: true
     outputs:
@@ -123,6 +121,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: [terraform-plan]
+    #These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
+    env:
+        ARM_CLIENT_ID: "${{ secrets.AZURE_AD_CLIENT_ID }}"
+        ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+        ARM_TENANT_ID: "${{ secrets.AZURE_AD_TENANT_ID }}"
     
     steps:
     # Checkout the repository to the GitHub Actions runner
