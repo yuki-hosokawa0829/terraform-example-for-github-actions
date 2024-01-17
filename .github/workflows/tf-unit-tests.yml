@@ -2,7 +2,7 @@ name: 'Terraform Unit Tests'
 
 on:
   push:
-    paths: 'terraform/sample/**'
+    paths: 'terraform/sample/**' 
 
 jobs:
   terraform-unit-tests:
@@ -12,7 +12,12 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: './terraform/sample'
     
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -25,7 +30,7 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      run: terraform init
+      run: terraform init -backend=false
 
     # Validate terraform files
     - name: Terraform Validate
@@ -33,7 +38,7 @@ jobs:
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
-      run: terraform fmt -check
+      run: terraform fmt -check -recursive
     
     # Perform a security scan of the terraform code using checkov
     - name: Run Checkov action
