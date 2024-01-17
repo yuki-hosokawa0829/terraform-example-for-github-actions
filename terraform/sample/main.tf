@@ -40,7 +40,7 @@ resource "azurerm_subnet" "subnet" {
 # Create NSG
 resource "azurerm_network_security_group" "nsg" {
   count               = 3
-  name                = "nsg"
+  name                = "nsg${count.index}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   security_rule = {
