@@ -51,14 +51,9 @@ resource "azurerm_network_security_group" "nsg" {
     access                                = "Allow"
     protocol                              = "Tcp"
     source_port_range                     = "*"
-    source_port_ranges                    = null
     destination_port_range                = "22"
-    destination_port_ranges               = null
     source_address_prefix                 = "219.166.164.110"
     destination_address_prefix            = "*"
-    destination_address_prefixes          = null
-    source_application_security_group_ids = null
-    source_port_ranges                    = null
   }
 }
 
