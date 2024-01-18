@@ -112,5 +112,8 @@ resource "azurerm_windows_virtual_machine" "vm" {
     storage_account_type = "Standard_LRS"
   }
 
+  encryption_at_host_enabled = true
+  allow_extension_operations = false
+
   boot_diagnostics {}
 }

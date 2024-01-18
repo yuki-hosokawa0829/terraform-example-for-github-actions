@@ -12,5 +12,5 @@ variable "admin_password" {
 }
 
 locals {
-  count = 3
+  count = 1
 }
