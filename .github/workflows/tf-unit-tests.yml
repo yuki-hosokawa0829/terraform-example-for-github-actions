@@ -5,9 +5,8 @@ on:
     paths: 'terraform/sample/**'
     
 permissions:
-  id-token: write
-  contents: read
-  issues: write
+  # required for all workflows
+  security-events: write
 
 jobs:
   terraform-unit-tests:
