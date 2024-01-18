@@ -1,0 +1,59 @@
+name: 'Terraform Destory'
+
+on:
+  workflow_dispatch:
+    
+#Special permissions required for OIDC authentication
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+#These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
+env:
+  ARM_CLIENT_ID: "${{ secrets.AZURE_AD_CLIENT_ID }}"
+  ARM_CLIENT_SECRET: "${{ secrets.AZURE_AD_CLIENT_SECRET }}"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+  ARM_TENANT_ID: "${{ secrets.AZURE_AD_TENANT_ID }}"
+  ARM_ACCESS_KEY: "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}"
+
+defaults:
+  run:
+    working-directory: './terraform/sample'
+
+jobs:
+  terraform-destory:
+    name: 'Terraform Destory'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+      WORKING_DIR: terraform/sample
+
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+    
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+
+    # Plan the changes required to reach the desired state of the configuration
+    - name: Terraform Plan
+      run: terraform plan
+    
+    # Destory the infrastructure
+    - name: Terraform Destory
+      run: terraform destroy -auto-approve
