@@ -43,7 +43,7 @@ resource "azurerm_network_security_group" "nsg" {
   name                = "nsg${count.index}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  security_rule = {
+  security_rule {
     name                                       = "AllowRDP"
     description                                = "Allow RDP"
     priority                                   = 1000
@@ -51,15 +51,9 @@ resource "azurerm_network_security_group" "nsg" {
     access                                     = "Allow"
     protocol                                   = "Tcp"
     source_port_range                          = "*"
-    source_port_ranges                         = null
     destination_port_range                     = "3389"
-    destination_port_ranges                    = null
     source_address_prefix                      = "219.166.164.110"
-    source_address_prefixes                    = null
-    source_application_security_group_ids      = null
     destination_address_prefix                 = "*"
-    destination_address_prefixes               = null
-    destination_application_security_group_ids = null
   }
 }
 
