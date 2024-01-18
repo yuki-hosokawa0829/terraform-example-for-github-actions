@@ -30,7 +30,7 @@ resource "azurerm_virtual_network" "vnet" {
 
 # Create Subnet
 resource "azurerm_subnet" "subnet" {
-  count                = 1
+  count                = 2
   name                 = "subnet${count.index}"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
