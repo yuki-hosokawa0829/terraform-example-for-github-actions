@@ -2,7 +2,12 @@ name: 'Terraform Unit Tests'
 
 on:
   push:
-    paths: 'terraform/sample/**' 
+    paths: 'terraform/sample/**'
+    
+permissions:
+  id-token: write
+  contents: read
+  issues: write
 
 jobs:
   terraform-unit-tests:
