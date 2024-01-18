@@ -33,7 +33,7 @@ jobs:
     - name: Terraform Init
       run: terraform init -backend=false
 
-    # Validate terraform files
+    # Validate terraform filescls
     - name: Terraform Validate
       run: terraform validate
 
