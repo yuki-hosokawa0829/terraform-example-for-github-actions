@@ -1,5 +1,9 @@
 name: 'Infrastructure Checks'
 on:
+  push:
+    branches:
+      - main
+    paths: 'terraform/sample/**'
   pull_request:
     branches:
       - main
