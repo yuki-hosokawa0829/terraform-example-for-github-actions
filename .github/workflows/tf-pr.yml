@@ -19,16 +19,12 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
       ARM_ACCESS_KEY: "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}"
+      WORKING_DIRECTORY: 'sample'
 
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        working-directory: ['./terraform/sample']
-    
     defaults:
       run:
-        working-directory: ${{ matrix.working-directory }}
+        working-directory: './terraform/${{ env.WORKING_DIRECTORY }}'
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -57,7 +53,7 @@ jobs:
     # Generate and show an execution plan
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -no-color -out=${{ matrix.working-directory }}.main.tfplan
+      run: terraform plan -input=false -no-color -out=${{ env.WORKING_DIRECTORY }}.main.tfplan
 
     - name: Comment PR
       uses: actions/github-script@v3
