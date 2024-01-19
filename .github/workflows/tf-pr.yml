@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        working-directory: ['terraform/sample']
+        working-directory: ['./terraform/sample']
     
     defaults:
       run:
