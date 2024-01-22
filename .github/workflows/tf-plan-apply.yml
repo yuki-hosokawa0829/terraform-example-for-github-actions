@@ -1,10 +1,10 @@
 name: 'Terraform Plan/Apply'
 
 on:
-#  push:
-#    branches:
-#    - main
-#    paths: 'terraform/sample/**'
+  push:
+    branches:
+    - main
+    paths: 'terraform/sample/**'
 
   pull_request:
     branches:
