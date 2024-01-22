@@ -57,7 +57,7 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
-# Associate NSG to Subnet
+/* # Associate NSG to Subnet
 resource "azurerm_subnet_network_security_group_association" "subnet_nsg_association" {
   count                     = local.count
   subnet_id                 = azurerm_subnet.subnet[count.index].id
@@ -112,5 +112,8 @@ resource "azurerm_windows_virtual_machine" "vm" {
     storage_account_type = "Standard_LRS"
   }
 
+  encryption_at_host_enabled = true
+  allow_extension_operations = false
+
   boot_diagnostics {}
-}
+} */
