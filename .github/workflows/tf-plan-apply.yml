@@ -4,12 +4,12 @@ on:
   push:
     branches:
     - main
-    paths: 'terraform/sample/**'
+    paths: 'terraform/aks/**'
 
   pull_request:
     branches:
     - main
-    paths: 'terraform/sample/**'
+    paths: 'terraform/aks/**'
 
 #Special permissions required for OIDC authentication
 permissions:
