@@ -38,6 +38,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: './terraform/aks'
 
     steps:
     # Checkout the repository to the GitHub Actions runner
