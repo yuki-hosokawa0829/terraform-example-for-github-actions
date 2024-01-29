@@ -22,7 +22,7 @@ env:
 
 defaults:
   run:
-    working-directory: './terraform/sample'
+    working-directory: './terraform/aks'
 
 jobs:
   terraform:
