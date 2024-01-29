@@ -7,7 +7,7 @@ terraform {
     }
     azapi = {
       version = "~>1.0.0"
-      source = "azure/azapi"
+      source  = "azure/azapi"
     }
   }
   backend "azurerm" {

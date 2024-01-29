@@ -14,5 +14,5 @@ variable "aks_cluster_name" {
 }
 
 locals {
-    username = "ndsouadmin"
+  username = "ndsouadmin"
 }
