@@ -26,7 +26,7 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
-      TF_VERSION: 1.6.6
+      WORKING_DIR: terraform/aks
     runs-on: ubuntu-latest
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -39,41 +39,34 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: 'Terraform Format'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: ${{ env.TF_VERSION }}
-        tf_actions_subcommand: 'fmt'
-        tf_actions_working_dir: "./terraform/aks"
-        
-    - name: 'Terraform Init'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: ${{ env.TF_VERSION }}
-        tf_actions_subcommand: 'init'
-        tf_actions_working_dir: "./terraform/aks"
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Service Principal
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
 
-    - name: 'Terraform Validate'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: ${{ env.TF_VERSION }}
-        tf_actions_subcommand: 'validate'
-        tf_actions_working_dir: "./terraform/aks"
-        
-    - name: 'Terraform Plan'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: ${{ env.TF_VERSION }}
-        tf_actions_subcommand: 'plan'
-        tf_actions_working_dir: "./terraform/aks"
+    # Format Terraform code to make sure that the configuration files adhere to the Terraform language style conventions
+    - name: Terraform Format
+      id: fmt
+      run: terraform fmt -check -recursive
+      
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init
+      run: terraform init
 
+    # Validate the configuration files in a Terraform working directory
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate
+
+    # Generate and show an execution plan for Terraform
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -out main.tfplan
+
+    # Deploy the infrastructure by using the Azure CLI
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/main'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: ${{ env.TF_VERSION }}
-        tf_actions_subcommand: 'apply'
-        tf_actions_working_dir: "./terraform/aks"
+      id: apply
+      run: terraform apply -auto-approve main.tfplan
 
   build:
     name: 'Apply AKS manifest'
@@ -124,26 +117,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
-    
-    - name: 'Terraform Init'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: ${{ env.TF_VERSION }}
-        tf_actions_subcommand: 'init'
-        tf_actions_working_dir: "./terraform/aks"
 
-    - name: 'Terraform Plan'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: ${{ env.TF_VERSION }}
-        tf_actions_subcommand: 'plan'
-        tf_actions_working_dir: "./terraform/aks"
-        
-    - name: 'Terraform Destory'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: ${{ env.TF_VERSION }}
-        tf_actions_subcommand: 'destroy'
-        tf_actions_working_dir: "./terraform/aks"
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Service Principal
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    # Format Terraform code to make sure that the configuration files adhere to the Terraform language style conventions
+    - name: Terraform Format
+      id: fmt
+      run: terraform fmt -check -recursive
+      
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    # Validate the configuration files in a Terraform working directory
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate
+
+    # Generate and show an execution plan for Terraform
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -out main.tfplan
+
+    # DEstroy the infrastructure by using the Azure CLI
+    - name: Terraform Destroy
+      id: destroy
+      run: terraform destroy -auto-approve main.tfplan
