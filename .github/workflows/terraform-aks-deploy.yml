@@ -16,29 +16,25 @@ permissions:
   contents: read
 
 env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+  WORKING_DIR: './terraform/aks'
   resource_group: 'ndsou-test-tfaks01'
   cluster_name: 'ndsou-test-tfaks01-cl'
   manifest_path: 'terraform/aks/manifest/aks-store-quickstart.yaml'
 
-defaults:
-  run:
-    working-directory: './terraform/aks'
-
 jobs:
   terraform:
     name: 'Deploy AKS Cluster'
-    env:
-      ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
     runs-on: ubuntu-latest
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
-        working-directory: './terraform/aks'
+        working-directory: ${{ env.WORKING_DIR }}
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -114,13 +110,12 @@ jobs:
     name: 'Delete AKS Cluster'
     needs: [terraform, build]
     if: failure() && needs.build.result == 'failure'
-    env:
-      ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
-      TF_VERSION: 1.6.6
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.WORKING_DIR }}
 
     steps:
     # Checkout the repository to the GitHub Actions runner

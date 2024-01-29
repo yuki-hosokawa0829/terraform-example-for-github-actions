@@ -9,6 +9,10 @@ terraform {
       version = "~>1.0.0"
       source  = "azure/azapi"
     }
+    random_pet = {
+      version = "~>2.2.0"
+      source  = "hashicorp/random"
+    }
   }
   backend "azurerm" {
     resource_group_name  = "tamopstfstates"
