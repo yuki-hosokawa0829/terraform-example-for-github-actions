@@ -50,6 +50,18 @@ resource "azapi_resource_action" "ssh_public_key_gen" {
   response_export_values = ["publicKey", "privateKey"]
 }
 
+resource "azurerm_user_assigned_identity" "identity" {
+  name                = "aks-identity"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_role_assignment" "role_assignment" {
+  scope                = azurerm_private_dns_zone.aks.id
+  role_definition_name = "Private DNS Zone Contributor"
+  principal_id         = azurerm_user_assigned_identity.identity.principal_id
+}
+
 resource "azurerm_kubernetes_cluster" "aks" {
   name                       = var.aks_cluster_name
   location                   = var.location
@@ -65,7 +77,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.identity.id]
   }
 
   linux_profile {
@@ -81,6 +94,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
     network_plugin    = "kubenet"
     load_balancer_sku = "standard"
   }
+
+  depends_on = [
+    azurerm_role_assignment.role_assignment
+  ]
 }
 
 output "client_certificate" {
