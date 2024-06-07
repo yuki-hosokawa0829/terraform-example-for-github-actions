@@ -1,13 +1,13 @@
 variable "resource_group_name" {
-  type    = string
+  type = string
 }
 
 variable "location" {
-  type    = string
+  type = string
 }
 
 variable "aks_cluster_name" {
-  type    = string
+  type = string
 }
 
 locals {
