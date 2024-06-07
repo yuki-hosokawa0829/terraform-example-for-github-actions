@@ -1,0 +1,53 @@
+name: 'Kubernetes-Deploy'
+concurrency: ${{ github.workflow }}-${{ github.ref }}-${{ github.run_number }}
+
+on:
+  push:
+    branches:
+    - main
+    paths: ['manifest/**', '.github/workflows/terraform-aks-deploy.yml']
+  pull_request:
+    branches:
+    - main
+    paths: ['manifest/**', '.github/workflows/terraform-aks-deploy.yml']
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_CREDENTIAL: ${{ secrets.AZURE_CREDENTIAL }}
+  manifest_path: 'manifest/aks-store-quickstart.yaml'
+
+jobs:
+  build:
+    name: 'Apply AKS manifest'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code 
+        uses: actions/checkout@v3
+
+      - name: Azure login
+        id: login
+        uses: azure/login@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIAL }}'
+
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: '${{ vars.RESOURCE_GROUP_NAME }}' 
+          cluster-name: '${{ vars.AKS_CLUSTER_NAME }}'
+
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Deploy to AKS
+        id: deploy-aks
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+          manifests: |
+             ${{ env.manifest_path }}
