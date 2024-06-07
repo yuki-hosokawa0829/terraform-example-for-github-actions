@@ -1,53 +1,71 @@
-name: 'Terraform-AKS-Deploy'
-concurrency: ${{ github.workflow }}-${{ github.ref }}-${{ github.run_number }}
+name: 'Terraform-Cloudflare-Deploy'
 
 on:
   push:
     branches:
     - main
-    paths: ['manifest/**', '.github/workflows/terraform-aks-deploy.yml']
+    paths: ['terraform/cloudflare/**', '.github/workflows/tf-cloudflare-deploy.yml']
+
   pull_request:
     branches:
     - main
-    paths: ['manifest/**', '.github/workflows/terraform-aks-deploy.yml']
+    paths: ['terraform/cloudflare/**', '.github/workflows/tf-cloudflare-deploy.yml']
 
-permissions:
-  id-token: write
-  contents: read
+defaults:
+  run:
+    working-directory: "./terraform/cloudflare"
 
-env:
-  AZURE_CREDENTIAL: ${{ secrets.AZURE_CREDENTIAL }}
-  manifest_path: 'manifest/aks-store-quickstart.yaml'
-
-jobs:
-  build:
-    name: 'Apply AKS manifest'
+jobs:                
+  terraform-apply:
+    name: 'Terraform Apply'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    environment: production
+    
     steps:
-      - name: Checkout source code 
-        uses: actions/checkout@v3
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
 
-      - name: Azure login
-        id: login
-        uses: azure/login@v1
-        with:
-          creds: '${{ secrets.AZURE_CREDENTIAL }}'
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
 
-      - name: Set AKS context
-        id: set-context
-        uses: azure/aks-set-context@v3
-        with:
-          resource-group: '${{ vars.RESOURCE_GROUP_NAME }}' 
-          cluster-name: '${{ vars.AKS_CLUSTER_NAME }}'
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      env:
+        CLOUDFLARE_API_TOKEM: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      run: |
+        terraform init \
+        -backend-config="cloudflare_api_token=$CLOUDFLARE_API_TOKEN
+        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID
+        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
+    
+    # Checks that all Terraform configuration files adhere to a canonical format
+    # Will fail the build if not
+    - name: Terraform Format
+      run: terraform fmt -recursive
 
-      - name: Setup kubectl
-        id: install-kubectl
-        uses: azure/setup-kubectl@v3
+    #Terraform Plan
+    - name: Terraform Plan
+      env:
+        CLOUDFLARE_API_TOKEM: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      run: |
+        terraform plan -no-color \
+        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID
+        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
 
-      - name: Deploy to AKS
-        id: deploy-aks
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
-          manifests: |
-             ${{ env.manifest_path }}
+    # Terraform Apply
+    - name: Terraform Apply
+      env:
+        RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
+        LOCATION: ${{ vars.LOCATION }}
+        AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME }}
+      run: |
+        terraform apply -auto-approve \
+        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID
+        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID

@@ -1,4 +1,4 @@
-name: 'Kubernetes-Deploy'
+name: 'Kubernetes Deploy'
 concurrency: ${{ github.workflow }}-${{ github.ref }}-${{ github.run_number }}
 
 on:
