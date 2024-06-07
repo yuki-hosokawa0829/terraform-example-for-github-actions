@@ -4,12 +4,12 @@ on:
   push:
     branches:
     - main
-    paths: 'terraform/aks' # disable this workflow
+    paths: ['terraform/aks/**', '.github/workflows/terraform-aks-deploy.yml']
 
   pull_request:
     branches:
     - main
-    paths: 'terraform/aks' # disable this workflow
+    paths: ['terraform/aks/**', '.github/workflows/terraform-aks-deploy.yml']
 
 #These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
 env:

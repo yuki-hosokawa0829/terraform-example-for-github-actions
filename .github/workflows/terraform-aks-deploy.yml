@@ -9,7 +9,7 @@ on:
   pull_request:
     branches:
     - main
-    paths: 'terraform/aks/**'
+    paths: ['terraform/aks/**', '.github/workflows/terraform-aks-deploy.yml']
 
 permissions:
   id-token: write
