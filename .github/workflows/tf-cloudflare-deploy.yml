@@ -1,4 +1,4 @@
-name: 'Terraform-Cloudflare-Deploy'
+name: 'Terraform Cloudflare Deploy'
 
 on:
   push:
@@ -51,7 +51,6 @@ jobs:
     #Terraform Plan
     - name: Terraform Plan
       env:
-        CLOUDFLARE_API_TOKEM: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       run: |
@@ -62,9 +61,8 @@ jobs:
     # Terraform Apply
     - name: Terraform Apply
       env:
-        RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
-        LOCATION: ${{ vars.LOCATION }}
-        AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME }}
+        CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       run: |
         terraform apply -auto-approve \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID
