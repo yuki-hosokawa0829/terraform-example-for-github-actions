@@ -47,11 +47,11 @@ jobs:
         BACKEND_STORAGE_ACCOUNT_NAME: ${{ vars.BACKEND_STORAGE_ACCOUNT_NAME }}
         BACKEND_CONTAINER_NAME: ${{ vars.BACKEND_CONTAINER_NAME }}
         BACKEND_KEY: ${{ vars.BACKEND_KEY }}
-      run: >
-        terraform init
-        -var backend_resource_group_name=$BACKEND_RESOURCE_GROUP_NAME
-        -var backend_storage_account_name=$BACKEND_STORAGE_ACCOUNT_NAME
-        -var backend_container_name=$vars.BACKEND_CONTAINER_NAME
+      run: |
+        terraform init \
+        -var backend_resource_group_name=$BACKEND_RESOURCE_GROUP_NAME \
+        -var backend_storage_account_name=$BACKEND_STORAGE_ACCOUNT_NAME \
+        -var backend_container_name=$vars.BACKEND_CONTAINER_NAME \
         -var backend_key=$vars.BACKEND_KEY
     
     # Checks that all Terraform configuration files adhere to a canonical format
