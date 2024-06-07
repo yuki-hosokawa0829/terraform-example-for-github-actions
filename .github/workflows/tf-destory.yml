@@ -73,7 +73,7 @@ jobs:
           LOCATION: ${{ vars.LOCATION }}
           AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME }}
         run: |
-          terraform Destroy -auto-approve \
+          terraform destroy -auto-approve \
           -var resource_group_name=$RESOURCE_GROUP_NAME \
           -var location=$LOCATION \
           -var aks_cluster_name=$AKS_CLUSTER_NAME
