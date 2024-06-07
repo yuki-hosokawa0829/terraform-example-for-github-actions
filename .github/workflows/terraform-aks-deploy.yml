@@ -20,6 +20,7 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+  AZURE_CREDENTIAL: ${{ secrets.AZURE_CREDENTIAL }}
   manifest_path: 'manifest/aks-store-quickstart.yaml'
 
 jobs:
@@ -34,9 +35,7 @@ jobs:
         id: login
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_AD_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_AD_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: '${{ secrets.AZURE_CREDENTIAL }}'
 
       - name: Set AKS context
         id: set-context
