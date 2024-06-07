@@ -42,12 +42,17 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
+      env:
+        BACKEND_RESOURCE_GROUP_NAME: ${{ vars.BACKEND_RESOURCE_GROUP_NAME }}
+        BACKEND_STORAGE_ACCOUNT_NAME: ${{ vars.BACKEND_STORAGE_ACCOUNT_NAME }}
+        BACKEND_CONTAINER_NAME: ${{ vars.BACKEND_CONTAINER_NAME }}
+        BACKEND_KEY: ${{ vars.BACKEND_KEY }}
       run: >
         terraform init
-        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
-        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
-        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
-        -var backend_key=$(vars.BACKEND_KEY)
+        -var backend_resource_group_name=$BACKEND_RESOURCE_GROUP_NAME
+        -var backend_storage_account_name=$BACKEND_STORAGE_ACCOUNT_NAME
+        -var backend_container_name=$vars.BACKEND_CONTAINER_NAME
+        -var backend_key=$vars.BACKEND_KEY
     
     # Checks that all Terraform configuration files adhere to a canonical format
     # Will fail the build if not
@@ -56,45 +61,28 @@ jobs:
 
     #Terraform Plan
     - name: Terraform Plan
+      env:
+        BACKEND_RESOURCE_GROUP_NAME: ${{ vars.BACKEND_RESOURCE_GROUP_NAME }}
+        BACKEND_STORAGE_ACCOUNT_NAME: ${{ vars.BACKEND_STORAGE_ACCOUNT_NAME }}
+        BACKEND_CONTAINER_NAME: ${{ vars.BACKEND_CONTAINER_NAME }}
+        BACKEND_KEY: ${{ vars.BACKEND_KEY }}
       run: >
         terraform plan -no-color
-        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
-        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
-        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
-        -var backend_key=$(vars.BACKEND_KEY)
+        -var backend_resource_group_name=$BACKEND_RESOURCE_GROUP_NAME
+        -var backend_storage_account_name=$BACKEND_STORAGE_ACCOUNT_NAME
+        -var backend_container_name=$vars.BACKEND_CONTAINER_NAME
+        -var backend_key=$vars.BACKEND_KEY
 
     # Terraform Apply
     - name: Terraform Apply
+      env:
+        BACKEND_RESOURCE_GROUP_NAME: ${{ vars.BACKEND_RESOURCE_GROUP_NAME }}
+        BACKEND_STORAGE_ACCOUNT_NAME: ${{ vars.BACKEND_STORAGE_ACCOUNT_NAME }}
+        BACKEND_CONTAINER_NAME: ${{ vars.BACKEND_CONTAINER_NAME }}
+        BACKEND_KEY: ${{ vars.BACKEND_KEY }}
       run: >
         terraform apply -auto-approve
-        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
-      run: >
-        terraform init
-        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
-        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
-        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
-        -var backend_key=$(vars.BACKEND_KEY)
-    
-    # Checks that all Terraform configuration files adhere to a canonical format
-    # Will fail the build if not
-    - name: Terraform Format
-      run: terraform fmt -check
-
-    #Terraform Plan
-    - name: Terraform Plan
-      run: >
-        terraform plan -no-color
-        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
-        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
-        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
-        -var backend_key=$(vars.BACKEND_KEY)
-
-    # Terraform Apply
-    - name: Terraform Apply
-      run: >
-        terraform apply -auto-approve
-        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
-        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
-        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
-        -var backend_key=$(vars.BACKEND_KEY)
+        -var backend_resource_group_name=$BACKEND_RESOURCE_GROUP_NAME
+        -var backend_storage_account_name=$BACKEND_STORAGE_ACCOUNT_NAME
+        -var backend_container_name=$vars.BACKEND_CONTAINER_NAME
+        -var backend_key=$vars.BACKEND_KEY
