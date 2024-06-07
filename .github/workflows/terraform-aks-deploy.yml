@@ -5,11 +5,11 @@ on:
   push:
     branches:
     - main
-    paths: ['terraform/aks/**', '.github/workflows/terraform-aks-deploy.yml']
+    paths: ['terraform/aks/manifest/**', '.github/workflows/terraform-aks-deploy.yml']
   pull_request:
     branches:
     - main
-    paths: ['terraform/aks/**', '.github/workflows/terraform-aks-deploy.yml']
+    paths: ['terraform/aks/manifest/**', '.github/workflows/terraform-aks-deploy.yml']
 
 permissions:
   id-token: write
