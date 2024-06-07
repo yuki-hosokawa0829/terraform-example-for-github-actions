@@ -14,19 +14,19 @@ variable "aks_cluster_name" {
 }
 
 variable "backend_resource_group_name" {
-  type    = string
+  type = string
 }
 
 variable "backend_storage_account_name" {
-  type    = string
+  type = string
 }
 
 variable "backend_container_name" {
-  type    = string
+  type = string
 }
 
 variable "backend_key" {
-  type    = string
+  type = string
 }
 
 locals {
