@@ -4,133 +4,32 @@ on:
   push:
     branches:
     - main
-    paths: 'terraform/hoge/**' # disable this workflow
+    paths: 'terraform/aks' # disable this workflow
 
   pull_request:
     branches:
     - main
-    paths: 'terraform/hoge/**' # disable this workflow
-
-#Special permissions required for OIDC authentication
-permissions:
-  id-token: write
-  contents: read
-  pull-requests: write
+    paths: 'terraform/aks' # disable this workflow
 
 #These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
 env:
-  ARM_CLIENT_ID: "${{ secrets.AZURE_AD_CLIENT_ID }}"
-  ARM_CLIENT_SECRET: "${{ secrets.AZURE_AD_CLIENT_SECRET }}"
-  ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-  ARM_TENANT_ID: "${{ secrets.AZURE_AD_TENANT_ID }}"
-  ARM_ACCESS_KEY: "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}"
-  WORKING_DIRECTORY: "terraform/sample"
+  ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+  ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
+  WORKING_DIRECTORY: "terraform/aks"
 
 defaults:
   run:
-    working-directory: './terraform/sample'
+    working-directory: "./terraform/aks"
 
-jobs:
-  terraform-plan:
-    name: 'Terraform Plan'
-    runs-on: ubuntu-latest
-    env:
-      #this is needed since we are running terraform with read-only permissions
-      ARM_SKIP_PROVIDER_REGISTRATION: true
-    outputs:
-      tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
-
-    steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    # Install the latest version of the Terraform CLI
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_wrapper: false
-
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
-      run: terraform init
-
-    # Checks that all Terraform configuration files adhere to a canonical format
-    # Will fail the build if not
-    - name: Terraform Format
-      run: terraform fmt -check
-
-    # Generates an execution plan for Terraform
-    # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
-    - name: Terraform Plan
-      id: tf-plan
-      run: |
-        export exitcode=0
-        terraform plan -detailed-exitcode -no-color -out main.tfplan || export exitcode=$?
-
-        echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
-        
-        if [ $exitcode -eq 1 ]; then
-          echo Terraform Plan Failed!
-          exit 1
-        else 
-          exit 0
-        fi
-        
-    # Save plan to artifacts  
-    #- name: Publish Terraform Plan
-    #  uses: actions/upload-artifact@v3
-    #  with:
-    #    name: main.tfplan
-    #    path: ${{ env.WORKING_DIRECTORY }}/main.tfplan
-        
-    # Create string output of Terraform Plan
-    - name: Create String Output
-      id: tf-plan-string
-      run: |
-        TERRAFORM_PLAN=$(terraform show -no-color main.tfplan)
-        
-        delimiter="$(openssl rand -hex 8)"
-        echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
-        echo "## Terraform Plan Output" >> $GITHUB_OUTPUT
-        echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
-        echo "" >> $GITHUB_OUTPUT
-        echo '```terraform' >> $GITHUB_OUTPUT
-        echo "$TERRAFORM_PLAN" >> $GITHUB_OUTPUT
-        echo '```' >> $GITHUB_OUTPUT
-        echo "</details>" >> $GITHUB_OUTPUT
-        echo "${delimiter}" >> $GITHUB_OUTPUT
-        
-    # Publish Terraform Plan as task summary
-    - name: Publish Terraform Plan to Task Summary
-      env:
-        SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
-      run: |
-        echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
-      
-    # If this is a PR post the changes
-    - name: Push Terraform Output to PR
-      if: github.ref != 'refs/heads/main'
-      uses: actions/github-script@v6
-      env:
-        SUMMARY: "${{ steps.tf-plan-string.outputs.summary }}"
-      with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const body = `${process.env.SUMMARY}`;
-            github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: body
-            })
-                
+jobs:                
   terraform-apply:
     name: 'Terraform Apply'
-    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: production
-    needs: [terraform-plan]
+    environment: productio
     
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -143,19 +42,59 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      run: terraform init
-
-    # Download saved plan from artifacts  
-    #- name: Download Terraform Plan
-    #  uses: actions/download-artifact@v3
-    #  with:
-    #    name: main.tfplan
-    #    path: ${{ env.WORKING_DIRECTORY }}/main.tfplan
+      run: >
+        terraform init
+        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
+        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
+        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
+        -var backend_key=$(vars.BACKEND_KEY)
+    
+    # Checks that all Terraform configuration files adhere to a canonical format
+    # Will fail the build if not
+    - name: Terraform Format
+      run: terraform fmt -check
 
     #Terraform Plan
     - name: Terraform Plan
-      run: terraform plan -no-color -out main.tfplan
+      run: >
+        terraform plan -no-color
+        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
+        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
+        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
+        -var backend_key=$(vars.BACKEND_KEY)
 
     # Terraform Apply
     - name: Terraform Apply
-      run: terraform apply -auto-approve main.tfplan
+      run: >
+        terraform apply -auto-approve
+        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: >
+        terraform init
+        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
+        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
+        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
+        -var backend_key=$(vars.BACKEND_KEY)
+    
+    # Checks that all Terraform configuration files adhere to a canonical format
+    # Will fail the build if not
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    #Terraform Plan
+    - name: Terraform Plan
+      run: >
+        terraform plan -no-color
+        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
+        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
+        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
+        -var backend_key=$(vars.BACKEND_KEY)
+
+    # Terraform Apply
+    - name: Terraform Apply
+      run: >
+        terraform apply -auto-approve
+        -var backend_resource_group_name=$(vars.BACKEND_RESOURCE_GROUP_NAME)
+        -var backend_storage_account_name=$(vars.BACKEND_STORAGE_ACCOUNT_NAME)
+        -var backend_container_name=$(vars.BACKEND_CONTAINER_NAME)
+        -var backend_key=$(vars.BACKEND_KEY)
