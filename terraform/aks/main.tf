@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
-  location = var.resource_location
+  location = var.location
 }
 
 resource "random_pet" "ssh_key_name" {
@@ -11,7 +11,7 @@ resource "random_pet" "ssh_key_name" {
 resource "azapi_resource" "ssh_public_key" {
   type      = "Microsoft.Compute/sshPublicKeys@2022-08-01"
   name      = random_pet.ssh_key_name.id
-  location  = var.resource_location
+  location  = var.location
   parent_id = azurerm_resource_group.rg.id
 }
 
@@ -26,7 +26,7 @@ resource "azapi_resource_action" "ssh_public_key_gen" {
 
 resource "azurerm_kubernetes_cluster" "aks" {
   name                = var.aks_cluster_name
-  location            = var.resource_location
+  location            = var.location
   resource_group_name = var.resource_group_name
   dns_prefix          = var.aks_cluster_name
   depends_on = [
