@@ -63,12 +63,13 @@ resource "azurerm_role_assignment" "role_assignment" {
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                       = var.aks_cluster_name
-  location                   = var.location
-  resource_group_name        = var.resource_group_name
-  private_cluster_enabled    = true
-  dns_prefix_private_cluster = var.aks_cluster_name
-  private_dns_zone_id        = azurerm_private_dns_zone.aks.id
+  name                             = var.aks_cluster_name
+  location                         = var.location
+  resource_group_name              = var.resource_group_name
+  private_cluster_enabled          = true
+  dns_prefix_private_cluster       = var.aks_cluster_name
+  private_dns_zone_id              = azurerm_private_dns_zone.aks.id
+  http_application_routing_enabled = true
 
   default_node_pool {
     name       = "default"
