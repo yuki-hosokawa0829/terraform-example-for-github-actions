@@ -43,8 +43,5 @@ jobs:
             --resource-group ${{ vars.RESOURCE_GROUP_NAME }} \
             --name ${{ vars.AKS_CLUSTER_NAME }} \
             --file .kube/${{ vars.AKS_CLUSTER_NAME }}
-
-      - name: Apply manifest
-        run: |
-          kubectl apply -k ${{ env.manifest_path }} \
-          --kubeconfig .kube/${{ vars.AKS_CLUSTER_NAME }}
+            kubectl apply -k ${{ env.manifest_path }} \
+            --kubeconfig .kube/${{ vars.AKS_CLUSTER_NAME }}
