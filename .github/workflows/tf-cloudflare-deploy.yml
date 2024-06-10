@@ -34,7 +34,7 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       env:
-        CLOUDFLARE_API_TOKEM: ${{ vars.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       run: |
@@ -51,7 +51,7 @@ jobs:
     #Terraform Plan
     - name: Terraform Plan
       env:
-        CLOUDFLARE_API_TOKEM: ${{ vars.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       run: |
@@ -63,7 +63,7 @@ jobs:
     # Terraform Apply
     - name: Terraform Apply
       env:
-        CLOUDFLARE_API_TOKEM: ${{ vars.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       run: |
