@@ -39,8 +39,8 @@ jobs:
         CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       run: |
         terraform init \
-        -backend-config="cloudflare_api_token=$CLOUDFLARE_API_TOKEN
-        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID
+        -backend-config="cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
+        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
     
     # Checks that all Terraform configuration files adhere to a canonical format
@@ -55,7 +55,7 @@ jobs:
         CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       run: |
         terraform plan -no-color \
-        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID
+        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
 
     # Terraform Apply
@@ -65,5 +65,5 @@ jobs:
         CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       run: |
         terraform apply -auto-approve \
-        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID
+        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
