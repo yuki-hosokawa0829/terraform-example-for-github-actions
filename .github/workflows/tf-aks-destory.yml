@@ -19,6 +19,7 @@ jobs:
   terraform-destory:
     name: 'Terraform Destory'
     runs-on: ubuntu-latest
+    environment: production
     
     steps:
       # Checkout the repository to the GitHub Actions runner
