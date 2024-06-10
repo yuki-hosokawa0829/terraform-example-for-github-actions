@@ -11,43 +11,34 @@ on:
     - main
     paths: ['manifest/**', '.github/workflows/tf-k8s-deploy.yml']
 
-permissions:
-  id-token: write
-  contents: read
-
 env:
   AZURE_CREDENTIAL: ${{ secrets.AZURE_CREDENTIAL }}
-  manifest_path: 'manifest/aks-store-quickstart.yaml'
+  manifest_path: './manifest'
 
 jobs:
-  build:
+  deploy-container:
     name: 'Apply AKS manifest'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code 
         uses: actions/checkout@v3
 
-      - name: Azure login
-        id: login
-        uses: azure/login@v1
+      - name: Azure Login
+        uses: azure/login@v2
         with:
-          creds: '${{ secrets.AZURE_CREDENTIAL }}'
+          creds: ${{ secrets.AZURE_CREDENTIAL }}
 
-      - name: Set AKS context
-        id: set-context
-        uses: azure/aks-set-context@v3
+      - name: AKS Get Credential
+        uses: azure/cli@v2
         with:
-          resource-group: '${{ vars.RESOURCE_GROUP_NAME }}' 
-          cluster-name: '${{ vars.AKS_CLUSTER_NAME }}'
+          azcliversion: latest
+          inlineScript: |
+            az aks get-credentials --admin --admin --overwrite-existing \
+            --resource-group ${{ vars.RESOURCE_GROUP_NAME }} \
+            --name ${{ vars.AKS_CLUSTER_NAME }}
+            --file ./kube/${{ vars.AKS_CLUSTER_NAME }}
 
-      - name: Setup kubectl
-        id: install-kubectl
-        uses: azure/setup-kubectl@v3
-
-      - name: Deploy to AKS
-        id: deploy-aks
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
-          manifests: |
-             ${{ env.manifest_path }}
+      - name: Apply manifest
+        run: |
+          kubectl apply -k ${{ env.manifest_path}} \
+          --kubeconfig ./kube/${{ vars.AKS_CLUSTER_NAME }}
