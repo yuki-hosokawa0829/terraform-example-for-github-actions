@@ -38,9 +38,9 @@ jobs:
       - name: List files
         run: |
           ls -a
-          cd .
+          cd ..
           ls -a
-          cd .
+          cd ..
           ls -a
 
       - name: Edit Hosts File
