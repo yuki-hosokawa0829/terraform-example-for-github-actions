@@ -5,7 +5,7 @@ on:
     branches:
     - main
     paths: ['manifest/**', '.github/workflows/tf-k8s-deploy.yml']
-    
+
   pull_request:
     branches:
     - main
@@ -25,10 +25,34 @@ jobs:
     environment: production
 
     steps:
-      - name: Checkout source code 
+      - name: Edit Hosts File
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            @echo off
+
+            cd %SystemRoot%\System32\drivers\etc
+            set FILE=hosts
+
+            for /f "usebackq delims=" %%A in (`az aks show -n ${{ vars.AKS_CLUSTER_NAME }} -g ${{ vars.RESOURCE_GROUP_NAME }} --query privateFqdn`) do set FQDN=%%A
+            for /f "usebackq delims=" %%A in (`az network private-dns record-set a show --name ${{ vars.AKS_CLUSTER_NAME }} --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --zone-name privatelink.japaneast.azmk8s.io --query aRecords[0].ipv4Address`) do set IP=%%A
+
+            set FQDN=%FQDN:"=%
+            set IP=%IP:"=%
+
+            set TEXT=%IP% %FQDN%
+
+            findstr /v %FQDN% %FILE% > temp
+            type temp> %FILE%
+            del temp
+
+            echo %TEXT%>> %FILE% 
+
+      - name: Checkout Source Code 
         uses: actions/checkout@v3
 
-      - name: Azure login
+      - name: Azure Login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CONTAINER_CLIENT_ID }}
@@ -45,7 +69,7 @@ jobs:
             --name ${{ vars.AKS_CLUSTER_NAME }} \
             --file .kube/${{ vars.AKS_CLUSTER_NAME }} 
 
-      - name: Kubectl apply
+      - name: Kubectl Apply
         run: |
           sudo kubectl apply -k ${{ env.manifest_path }} \
           --kubeconfig .kube/${{ vars.AKS_CLUSTER_NAME }}
