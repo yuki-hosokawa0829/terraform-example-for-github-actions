@@ -30,7 +30,7 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            cd %SystemRoot%\\System32\\drivers\\etc
+            cd etc\\hosts
             set FILE=hosts
 
             for /f "usebackq delims=" %%A in (`az aks show -n ${{ vars.AKS_CLUSTER_NAME }} -g ${{ vars.RESOURCE_GROUP_NAME }} --query privateFqdn`) do set FQDN=%%A
