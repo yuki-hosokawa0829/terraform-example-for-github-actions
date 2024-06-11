@@ -21,7 +21,7 @@ permissions:
 jobs:
   deploy-container:
     name: 'Apply AKS manifest'
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     environment: production
 
     steps:
@@ -30,7 +30,7 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            cd %windir%\\System32\\drivers\\etc \
+            cd etc \
             set FILE=hosts \
 
             for /f "usebackq delims=" %%A in (`az aks show -n ${{ vars.AKS_CLUSTER_NAME }} -g ${{ vars.RESOURCE_GROUP_NAME }} --query privateFqdn`) do set FQDN=%%A \
