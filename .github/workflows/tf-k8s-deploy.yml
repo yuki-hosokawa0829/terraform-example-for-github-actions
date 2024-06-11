@@ -21,7 +21,7 @@ permissions:
 jobs:
   deploy-container:
     name: 'Apply AKS manifest'
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     environment: production
 
     steps:
@@ -30,22 +30,22 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            cd etc
-            set FILE=hosts
+            cd %windir%\\System32\\drivers\\etc \
+            set FILE=hosts \
 
-            for /f "usebackq delims=" %%A in (`az aks show -n ${{ vars.AKS_CLUSTER_NAME }} -g ${{ vars.RESOURCE_GROUP_NAME }} --query privateFqdn`) do set FQDN=%%A
-            for /f "usebackq delims=" %%A in (`az network private-dns record-set a show --name ${{ vars.AKS_CLUSTER_NAME }} --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --zone-name privatelink.japaneast.azmk8s.io --query aRecords[0].ipv4Address`) do set IP=%%A
+            for /f "usebackq delims=" %%A in (`az aks show -n ${{ vars.AKS_CLUSTER_NAME }} -g ${{ vars.RESOURCE_GROUP_NAME }} --query privateFqdn`) do set FQDN=%%A \
+            for /f "usebackq delims=" %%A in (`az network private-dns record-set a show --name ${{ vars.AKS_CLUSTER_NAME }} --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --zone-name privatelink.japaneast.azmk8s.io --query aRecords[0].ipv4Address`) do set IP=%%A \
 
-            set FQDN=%FQDN:"=%
-            set IP=%IP:"=%
+            set FQDN=%FQDN:"=% \
+            set IP=%IP:"=% \
 
-            set TEXT=%IP% %FQDN%
+            set TEXT=%IP% %FQDN% \
 
-            findstr /v %FQDN% %FILE% > temp
-            type temp> %FILE%
-            del temp
+            findstr /v %FQDN% %FILE% > temp \
+            type temp> %FILE% \
+            del temp \
 
-            echo %TEXT%>> %FILE% 
+            echo %TEXT%>> %FILE%
 
       - name: Checkout Source Code 
         uses: actions/checkout@v3
