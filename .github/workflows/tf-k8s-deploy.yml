@@ -5,6 +5,7 @@ on:
     branches:
     - main
     paths: ['manifest/**', '.github/workflows/tf-k8s-deploy.yml']
+    
   pull_request:
     branches:
     - main
