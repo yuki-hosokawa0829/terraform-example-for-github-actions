@@ -36,7 +36,12 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: List files
-        run: find hosts
+        run: |
+          ls -a
+          cd .
+          ls -a
+          cd .
+          ls -a
 
       - name: Edit Hosts File
         uses: azure/cli@v2
