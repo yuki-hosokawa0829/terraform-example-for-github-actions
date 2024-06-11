@@ -30,8 +30,6 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            @echo off
-
             cd %SystemRoot%\System32\drivers\etc
             set FILE=hosts
 
