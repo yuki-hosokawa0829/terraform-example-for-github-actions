@@ -11,7 +11,7 @@ on:
     - main
     paths: ['terraform/aks/**', '.github/workflows/tf-aks-deploy.yml']
 
-#These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
+#These environment variables are used by the terraform azure provider to setup OIDD authenticate.
 env:
   ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
@@ -24,13 +24,13 @@ defaults:
   run:
     working-directory: "./terraform/aks"
 
-jobs:                
+jobs:
   terraform-apply:
     name: 'Terraform Apply'
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -40,7 +40,7 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: ${{ env.TERRAFORM_VERSION }}  
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
 
     - name: Terraform Version
       run: terraform --version
@@ -64,7 +64,7 @@ jobs:
         -var resource_group_name=$RESOURCE_GROUP_NAME \
         -var location=$LOCATION \
         -var aks_cluster_name=$AKS_CLUSTER_NAME
-    
+
     # Checks that all Terraform configuration files adhere to a canonical format
     # Will fail the build if not
     - name: Terraform Format

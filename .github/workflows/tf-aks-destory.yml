@@ -20,16 +20,16 @@ jobs:
     name: 'Terraform Destory'
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout
         uses: actions/checkout@v3
-  
+
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
-  
+
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         env:
@@ -49,12 +49,12 @@ jobs:
           -var resource_group_name=$RESOURCE_GROUP_NAME \
           -var location=$LOCATION \
           -var aks_cluster_name=$AKS_CLUSTER_NAME
-      
+
       # Checks that all Terraform configuration files adhere to a canonical format
       # Will fail the build if not
       - name: Terraform Format
         run: terraform fmt -recursive
-  
+
       #Terraform Plan
       - name: Terraform Plan
         env:
@@ -66,7 +66,7 @@ jobs:
           -var resource_group_name=$RESOURCE_GROUP_NAME \
           -var location=$LOCATION \
           -var aks_cluster_name=$AKS_CLUSTER_NAME
-  
+
       # Terraform Destroy
       - name: Terraform Destroy
         env:
