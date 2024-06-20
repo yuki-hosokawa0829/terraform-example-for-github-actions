@@ -21,7 +21,8 @@ permissions:
 jobs:
   deploy-container:
     name: 'Apply AKS manifest'
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: production
 
     steps:
