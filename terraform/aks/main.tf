@@ -9,11 +9,41 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = ["10.0.0.0/16"]
 }
 
-resource "azurerm_subnet" "subnet" {
+resource "azurerm_subnet" "aks" {
   name                 = "aks-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.0/24"]
+}
+
+resource "azurerm_subnet" "vm" {
+  name                 = "aks-subnet"
+  resource_group_name  = data.azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+resource "azurerm_network_security_group" "nsg" {
+  name                = "aks-nsg"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.location
+
+  security_rule {
+    name                       = "AllowInbound"
+    priority                   = 1000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "RDP"
+    source_port_range          = "*"
+    destination_port_range     = "3389"
+    source_address_prefix      = "180.144.150.179"
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsg" {
+  subnet_id                 = azurerm_subnet.vm.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 resource "azurerm_private_dns_zone" "aks" {
@@ -26,6 +56,42 @@ resource "azurerm_private_dns_zone_virtual_network_link" "aks" {
   resource_group_name   = data.azurerm_resource_group.rg.name
   private_dns_zone_name = azurerm_private_dns_zone.aks.name
   virtual_network_id    = azurerm_virtual_network.vnet.id
+}
+
+resource "azurerm_network_interface" "nic" {
+  name                = "vm-nic"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.location
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.vm.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_windows_virtual_machine" "vm" {
+  name                = "vm"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.location
+  size                = "Standard_D2_v2"
+  admin_username      = "adminuser"
+  admin_password      = "Password1234!"
+  network_interface_ids = [
+    azurerm_network_interface.nic.id
+  ]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
+    version   = "latest"
+  }
 }
 
 resource "random_pet" "ssh_key_name" {
@@ -101,7 +167,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 output "client_certificate" {
-  value = azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate
+  value     = azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate
   sensitive = true
 }
 

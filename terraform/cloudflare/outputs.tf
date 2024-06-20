@@ -4,6 +4,6 @@ output "cloudflare_tunnel_secret" {
 }
 
 output "cloudflare_tunnel_id" {
-  value = cloudflare_tunnel.auto_tunnel.id
+  value     = cloudflare_tunnel.auto_tunnel.id
   sensitive = true
 }
