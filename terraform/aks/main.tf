@@ -58,6 +58,13 @@ resource "azurerm_private_dns_zone_virtual_network_link" "aks" {
   virtual_network_id    = azurerm_virtual_network.vnet.id
 }
 
+resource "azurerm_public_ip" "pip" {
+  name                = "vm-pip"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.location
+  allocation_method   = "Static"
+}
+
 resource "azurerm_network_interface" "nic" {
   name                = "vm-nic"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -67,6 +74,7 @@ resource "azurerm_network_interface" "nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.vm.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.pip.id
   }
 }
 
