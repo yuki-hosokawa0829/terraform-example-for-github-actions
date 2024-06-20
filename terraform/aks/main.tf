@@ -6,21 +6,21 @@ resource "azurerm_virtual_network" "vnet" {
   name                = "aks-vnet"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.location
-  address_space       = ["10.0.0.0/16"]
+  address_space       = ["10.3.0.0/16"]
 }
 
 resource "azurerm_subnet" "aks" {
   name                 = "aks-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.0.0/24"]
+  address_prefixes     = ["10.3.0.0/24"]
 }
 
 resource "azurerm_subnet" "vm" {
   name                 = "vm-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = ["10.3.1.0/24"]
 }
 
 resource "azurerm_network_security_group" "nsg" {
