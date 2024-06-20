@@ -36,28 +36,29 @@ jobs:
           tenant-id: ${{ secrets.AZURE_AD_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      #- name: Edit Hosts File
-      #  uses: azure/cli@v2
-      #  with:
-      #    azcliversion: latest
-      #    inlineScript: |
-      #      ls
-      #      cd etc
-      #      set FILE=hosts
+      - name: Edit Hosts File
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            @echo off
 
-      #      for /f "usebackq delims=" %%A in (`az aks show -n ${{ vars.AKS_CLUSTER_NAME }} -g ${{ vars.RESOURCE_GROUP_NAME }} --query privateFqdn`) do set FQDN=%%A
-      #      for /f "usebackq delims=" %%A in (`az network private-dns record-set a show --name ${{ vars.AKS_CLUSTER_NAME }} --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --zone-name privatelink.japaneast.azmk8s.io --query aRecords[0].ipv4Address`) do set IP=%%A
+            cd %windir%\System32\drivers\etc
+            set FILE=hosts
 
-      #      set FQDN=%FQDN:"=%
-      #      set IP=%IP:"=%
+            for /f "usebackq delims=" %%A in (`az aks show -n ${{ vars.AKS_CLUSTER_NAME }} -g ${{ vars.RESOURCE_GROUP_NAME }} --query privateFqdn`) do set FQDN=%%A
+            for /f "usebackq delims=" %%A in (`az network private-dns record-set a show --name ${{ vars.AKS_CLUSTER_NAME }} --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --zone-name privatelink.japaneast.azmk8s.io --query aRecords[0].ipv4Address`) do set IP=%%A
 
-      #      set TEXT=%IP% %FQDN%
+            set FQDN=%FQDN:"=%
+            set IP=%IP:"=%
 
-      #      findstr /v %FQDN% %FILE% > temp
-      #      type temp> %FILE%
-      #      del temp
+            set TEXT=%IP% %FQDN%
 
-      #      echo %TEXT%>> %FILE%
+            findstr /v %FQDN% %FILE% > temp
+            type temp> %FILE%
+            del temp
+
+            echo %TEXT%>> %FILE%
 
       - name: AKS Get Credential
         uses: azure/cli@v2
