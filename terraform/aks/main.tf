@@ -140,7 +140,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     name                  = "default"
     vm_size               = "Standard_D2_v2"
     zones                 = ["1", "2", "3"]
-    vnet_subnet_id        = azurerm_private_dns_zone.aks.id
+    vnet_subnet_id        = azurerm_subnet.aks.id
     enable_node_public_ip = false
     enable_auto_scaling   = true
     min_count             = 1
