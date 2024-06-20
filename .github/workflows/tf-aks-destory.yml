@@ -3,7 +3,7 @@ name: 'Terraform Destory'
 on:
   workflow_dispatch:
 
-#These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
+#These environment variables are used by the terraform azure provider to setup OIDD authenticate.
 env:
   ARM_CLIENT_ID: "${{ secrets.AZURE_AD_CLIENT_ID }}"
   ARM_CLIENT_SECRET: "${{ secrets.AZURE_AD_CLIENT_SECRET }}"
@@ -63,6 +63,7 @@ jobs:
           AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME }}
         run: |
           terraform plan -no-color \
+          -destroy \
           -var resource_group_name=$RESOURCE_GROUP_NAME \
           -var location=$LOCATION \
           -var aks_cluster_name=$AKS_CLUSTER_NAME
