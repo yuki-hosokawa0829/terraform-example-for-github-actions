@@ -17,14 +17,14 @@ resource "azurerm_subnet" "aks" {
 }
 
 resource "azurerm_subnet" "vm" {
-  name                 = "aks-subnet"
+  name                 = "vm-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
 resource "azurerm_network_security_group" "nsg" {
-  name                = "aks-nsg"
+  name                = "vm-nsg"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.location
 
