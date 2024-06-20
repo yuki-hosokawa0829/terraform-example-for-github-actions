@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
 - container/aks-store-quickstart.yaml
 - container/internal-lb.yaml
-#- container/cloudflared.yaml
+- container/cloudflared.yaml
