@@ -137,9 +137,16 @@ resource "azurerm_kubernetes_cluster" "aks" {
   http_application_routing_enabled = true
 
   default_node_pool {
-    name       = "default"
-    node_count = 3
-    vm_size    = "Standard_D2_v2"
+    name                  = "default"
+    vm_size               = "Standard_D2_v2"
+    zones                 = ["1", "2", "3"]
+    vnet_subnet_id        = azurerm_private_dns_zone.aks.id
+    enable_node_public_ip = false
+    enable_auto_scaling   = true
+    min_count             = 1
+    max_count             = 4
+    node_count            = 1
+    max_pods              = 100
   }
 
   identity {
@@ -158,7 +165,18 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   network_profile {
     network_plugin    = "kubenet"
+    network_policy    = "calico"
     load_balancer_sku = "standard"
+
+    load_balancer_profile {
+      managed_outbound_ip_count = 1
+      idle_timeout_in_minutes   = 30
+    }
+  }
+
+  key_vault_secrets_provider {
+    secret_rotation_enabled  = true
+    secret_rotation_interval = "1440m"
   }
 
   depends_on = [
