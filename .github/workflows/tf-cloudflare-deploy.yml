@@ -15,13 +15,13 @@ defaults:
   run:
     working-directory: "./terraform/cloudflare"
 
-jobs:                
+jobs:
   terraform-apply:
     name: 'Terraform Apply'
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -42,7 +42,7 @@ jobs:
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
-    
+
     # Checks that all Terraform configuration files adhere to a canonical format
     # Will fail the build if not
     - name: Terraform Format
