@@ -1,9 +1,25 @@
 name: 'Destroy'
-description: 'Destroy the infrastructure'
+description: 'Destroy Terraform configuration'
 
 inputs:
   ENVIRONMENT:
     description: 'The environment to deploy to'
+    required: true
+
+  BACKEND_ENDPOINT:
+    description: 'The backend endpoint'
+    required: true
+
+  BACKEND_BUCKET:
+    description: 'The backend bucket'
+    required: true
+
+  BACKEND_KEY:
+    description: 'The backend key'
+    required: true
+
+  BACKEND_REGION:
+    description: 'The backend region'
     required: true
 
   CLOUDFLARE_API_TOKEN:
@@ -18,9 +34,26 @@ inputs:
     description: 'The Cloudflare account ID'
     required: true
 
+  CLOUDFLARE_ACCESS_KEY_ID:
+    description: 'The Cloudflare access key ID'
+    required: true
+
+  CLOUDFLARE_SECRET_ACCESS_KEY:
+    description: 'The Cloudflare secret access key'
+    required: true
+
 runs:
   using: 'composite'
   steps:
+    - name: Set Environment Variables
+      shell: bash
+      run: |
+        echo "AWS_ACCOUNT_ID=${{ inputs.CLOUDFLARE_ACCOUNT_ID }}" >> $GITHUB_ENV
+        echo "AWS_ACCESS_KEY_ID=${{ inputs.CLOUDFLARE_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=${{ inputs.CLOUDFLARE_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+        echo "CLOUDFLARE_API_TOKEN=${{ inputs.CLOUDFLARE_API_TOKEN }}" >> $GITHUB_ENV
+        echo "CLOUDFLARE_ACCOUNT_ID=${{ inputs.CLOUDFLARE_ACCOUNT_ID }}" >> $GITHUB_ENV
+
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -35,19 +68,16 @@ runs:
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
+        BACKEND_ENDPOINT: ${{ inputs.BACKEND_ENDPOINT }}
+        BACKEND_BUCKET: ${{ inputs.BACKEND_BUCKET }}
+        BACKEND_KEY: ${{ inputs.BACKEND_KEY }}
+        BACKEND_REGION: ${{ inputs.BACKEND_REGION }}
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} init \
-        #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} init \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
-
-    # Terraform Validate
-    - name: Terraform Validate
-      shell: bash
-      run: terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} validate -no-color
-      #run: terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} validate -no-color \
 
     - name: Terraform Plan
       shell: bash
@@ -57,16 +87,15 @@ runs:
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
       run: |
-        terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} plan -destroy \
-        #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} plan -destroy \
+        terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} plan -destory \
         -no-color \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
 
-    # Terraform Destroy
-    - name: Terraform Destroy
+    # Terraform Apply
+    - name: Terraform Apply
       shell: bash
       env:
         ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
@@ -74,8 +103,7 @@ runs:
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
       run: |
-        terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} destroy \
-        #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} destroy \
+        terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} apply \
         -auto-approve \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
