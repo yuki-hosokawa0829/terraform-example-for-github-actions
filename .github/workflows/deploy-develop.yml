@@ -26,7 +26,7 @@ jobs:
       uses: ./.github/actions/deploy
       with:
         ENVIRONMENT: ${{ vars.ENVIRONMENT }}
-        BACKEND_ENDPOINT: ${{ vars.BACKEND_ENDPOINT }}
+        BACKEND_ENDPOINT: ${{ secrets.BACKEND_ENDPOINT }}
         BACKEND_BUCKET: ${{ vars.BACKEND_BUCKET }}
         BACKEND_KEY: ${{ vars.BACKEND_KEY }}
         BACKEND_REGION: ${{ vars.BACKEND_REGION }}
