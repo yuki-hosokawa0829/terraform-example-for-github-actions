@@ -1,4 +1,4 @@
-name: 'Terraform Cloudflare Plan/Apply Develop'
+name: 'Terraform Cloudflare Plan/Apply Production'
 
 on:
   push:
@@ -8,15 +8,15 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.ref, 'refs/heads/feature/') && github.ref != 'refs/heads/main' && github.base_ref != 'refs/heads/main'}}
+    if: ${{ github.ref == format('refs/heads/production/{0}', vars.PLAN_VERSION) || github.base_ref == format('refs/heads/production/{0}', vars.PLAN_VERSION) }}
     steps:
     - name: Unknown Branch
       run: exit 1
 
   terraform-cf-deploy:
     runs-on: ubuntu-latest
-    environment: develop
-    if: ${{ startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/main' || github.base_ref == 'refs/heads/main'}}
+    environment: production
+    if: ${{ github.ref != format('refs/heads/production/{0}', vars.PLAN_VERSION) && github.base_ref != format('refs/heads/production/{0}', vars.PLAN_VERSION) }}
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
