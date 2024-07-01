@@ -8,11 +8,11 @@ terraform {
 
   backend "s3" {
     endpoints = {
-      s3 = var.backend_endpoint
+      s3 = "https://f4e8dc64b95dae079fcfb11157ea522a.r2.cloudflarestorage.com"
     }
-    bucket                      = var.backend_bucket
-    key                         = var.backend_key
-    region                      = var.backend_region
+    bucket                      = "r2-tfstate-dev"
+    key                         = "terraform.tfstate"
+    region                      = "us-east-1" # any region will do
     skip_credentials_validation = true
     skip_requesting_account_id  = true
     skip_s3_checksum            = true
@@ -22,7 +22,7 @@ terraform {
 
 
 provider "cloudflare" {
-  #api_token = var.cloudflare_account_id
+  api_token = var.cloudflare_account_id
 }
 
 module "cloudflare_tunnel" {
