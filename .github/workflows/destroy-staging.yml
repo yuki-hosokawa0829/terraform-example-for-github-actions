@@ -1,0 +1,29 @@
+name: 'Terraform Cloudflare Destory Staging'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == format('refs/heads/pre-production/{0}', vars.PLAN_VERSION) || github.base_ref == format('refs/heads/pre-production/{0}', vars.PLAN_VERSION) }}
+    steps:
+    - name: Unknown Branch
+      run: exit 1
+
+  terraform-cf-destroy:
+    runs-on: ubuntu-latest
+    environment: staging
+    if: ${{ github.ref != format('refs/heads/pre-production/{0}', vars.PLAN_VERSION) && github.base_ref != format('refs/heads/pre-production/{0}', vars.PLAN_VERSION) }}
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Destroy
+      uses: ./.github/actions/destroy
+      with:
+        ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}

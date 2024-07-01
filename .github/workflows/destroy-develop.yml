@@ -1,4 +1,4 @@
-name: 'Terraform Cloudflare Destory Production'
+name: 'Terraform Cloudflare Destory Develop'
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ jobs:
 
   terraform-cf-destroy:
     runs-on: ubuntu-latest
-    environment: production
+    environment: develop
     if: ${{ startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/main' || github.base_ref == 'refs/heads/main'}}
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -25,5 +25,5 @@ jobs:
       with:
         ENVIRONMENT: ${{ vars.ENVIRONMENT }}
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
-        CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

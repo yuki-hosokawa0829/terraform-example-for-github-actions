@@ -36,7 +36,8 @@ runs:
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
       run: |
-        terraform -chdir=terraform/env/${{ inputs.ENVIRONMENT }} init \
+        terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} init \
+        #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} init \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
@@ -45,7 +46,8 @@ runs:
     # Terraform Validate
     - name: Terraform Validate
       shell: bash
-      run: terraform -chdir=terraform/env/${{ inputs.ENVIRONMENT }} validate -no-color
+      run: terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} validate -no-color
+      #run: terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} validate -no-color \
 
     - name: Terraform Plan
       shell: bash
@@ -55,7 +57,8 @@ runs:
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
       run: |
-        terraform -chdir=terraform/env/${{ inputs.ENVIRONMENT }} plan -no-color \
+        terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} plan -no-color \
+        #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} plan -no-color \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
@@ -70,7 +73,8 @@ runs:
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
       run: |
-        terraform -chdir=terraform/env/${{ inputs.ENVIRONMENT }} apply -auto-approve \
+        terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} apply -auto-approve \
+        #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} apply -auto-approve \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
