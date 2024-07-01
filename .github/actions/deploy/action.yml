@@ -64,7 +64,7 @@ runs:
     - name: Terraform Init
       shell: bash
       env:
-        ENVIROMENT: ${{ inputs.ENVIRONMENT }}
+        ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
@@ -93,7 +93,7 @@ runs:
     - name: Terraform Plan
       shell: bash
       env:
-        ENVIROMENT: ${{ inputs.ENVIRONMENT }}
+        ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
@@ -109,7 +109,7 @@ runs:
     - name: Terraform Apply
       shell: bash
       env:
-        ENVIROMENT: ${{ inputs.ENVIRONMENT }}
+        ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
