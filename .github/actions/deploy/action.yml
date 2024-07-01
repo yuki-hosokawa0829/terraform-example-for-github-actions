@@ -74,11 +74,6 @@ runs:
         BACKEND_REGION: ${{ inputs.BACKEND_REGION }}
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} init \
-        #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} init \
-        #-backend-config="endpoint=${BACKEND_ENDPOINT}" \
-        #-backend-config="bucket=${BACKEND_BUCKET}" \
-        #-backend-config="key=${BACKEND_KEY}" \
-        #-backend-config="region=${BACKEND_REGION}" \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
