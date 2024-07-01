@@ -8,14 +8,14 @@ resource "random_password" "tunnel_secret" {
 # Creates a new locally-managed tunnel for the AKS.
 resource "cloudflare_tunnel" "auto_tunnel" {
   account_id = var.cloudflare_account_id
-  name       = "Terraform AKS tunnel"
+  name       = "Terraform AKS tunnel ${var.environment}"
   secret     = base64sha256(random_password.tunnel_secret.result)
 }
 
 # Creates the CNAME record that routes http_app.${var.cloudflare_zone} to the tunnel.
 resource "cloudflare_record" "http_app" {
   zone_id = var.cloudflare_zone_id
-  name    = "http_app"
+  name    = "http_app_${var.environment}"
   value   = cloudflare_tunnel.auto_tunnel.cname
   type    = "CNAME"
   proxied = true
