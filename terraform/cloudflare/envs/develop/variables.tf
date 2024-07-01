@@ -3,6 +3,10 @@ variable "environment" {
   type        = string
 }
 
+variable "cloudflare_api_token" {
+  description = "API token for your Cloudflare account"
+}
+
 variable "cloudflare_zone_id" {
   description = "Zone ID for your domain"
   type        = string
