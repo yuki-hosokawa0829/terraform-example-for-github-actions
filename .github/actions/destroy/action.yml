@@ -58,15 +58,15 @@ runs:
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
 
-    # Terraform Apply
-    - name: Terraform Apply
+    # Terraform Destroy
+    - name: Terraform Destroy
       shell: bash
       env:
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
       run: |
-        terraform apply -chdir=terraform/cloudflare \
+        terraform -chdir=terraform/cloudflare destroy \
         -auto-approve \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
