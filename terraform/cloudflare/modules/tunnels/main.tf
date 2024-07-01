@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = ">=4.3.0"
+    }
+  }
+}
+
 # Generates a 64-character secret for the tunnel.
 # Using `random_password` means the result is treated as sensitive and, thus,
 # not displayed in console output. Refer to: https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password
