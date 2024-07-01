@@ -1,0 +1,77 @@
+name: 'Deploy'
+description: 'Deploy Terraform configuration to Cloudflare'
+
+inputs:
+  ENVIRONMENT:
+    description: 'The environment to deploy to'
+    required: true
+
+  CLOUDFLARE_API_TOKEN:
+    description: 'The Cloudflare API token'
+    required: true
+
+  CLOUDFLARE_ZONE_ID:
+    description: 'The Cloudflare zone ID'
+    required: true
+
+  CLOUDFLARE_ACCOUNT_ID:
+    description: 'The Cloudflare account ID'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.8.5
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      shell: bash
+      env:
+        ENVIROMENT: ${{ inputs.ENVIRONMENT }}
+        CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
+      run: |
+        terraform -chdir=terraform/env/${{ inputs.ENVIRONMENT }} init \
+        -var environment=${{ inputs.ENVIRONMENT }} \
+        -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
+        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
+        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
+
+    # Terraform Validate
+    - name: Terraform Validate
+      shell: bash
+      run: terraform -chdir=terraform/env/${{ inputs.ENVIRONMENT }} validate -no-color
+
+    - name: Terraform Plan
+      shell: bash
+      env:
+        ENVIROMENT: ${{ inputs.ENVIRONMENT }}
+        CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
+      run: |
+        terraform -chdir=terraform/env/${{ inputs.ENVIRONMENT }} plan -no-color \
+        -var environment=${{ inputs.ENVIRONMENT }} \
+        -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
+        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
+        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
+
+    # Terraform Apply
+    - name: Terraform Apply
+      shell: bash
+      env:
+        ENVIROMENT: ${{ inputs.ENVIRONMENT }}
+        CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
+      run: |
+        terraform -chdir=terraform/env/${{ inputs.ENVIRONMENT }} apply -auto-approve \
+        -var environment=${{ inputs.ENVIRONMENT }} \
+        -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
+        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
+        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
