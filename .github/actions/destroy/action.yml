@@ -52,7 +52,7 @@ runs:
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
       run: |
-        terraform -chdir=terraform/cloudflare plan -destroy\
+        terraform -chdir=terraform/cloudflare plan -destroy \
         -no-color \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
