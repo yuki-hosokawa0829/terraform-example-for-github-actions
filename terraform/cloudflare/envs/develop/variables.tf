@@ -14,8 +14,22 @@ variable "cloudflare_account_id" {
   sensitive   = true
 }
 
-variable "cloudflare_api_token" {
-  description = "Cloudflare API token created at https://dash.cloudflare.com/profile/api-tokens"
+variable "backend_endpoint" {
+  description = "The endpoint to access the backend resources."
   type        = string
-  sensitive   = true
+}
+
+variable "backend_bucket" {
+  description = "The name of the bucket to store the Terraform state file."
+  type        = string
+}
+
+variable "backend_key" {
+  description = "The key to access the backend resources."
+  type        = string
+}
+
+variable "backend_region" {
+  description = "The region in which the backend resources are located."
+  type        = string
 }
