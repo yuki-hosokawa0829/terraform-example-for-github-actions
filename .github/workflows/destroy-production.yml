@@ -1,4 +1,4 @@
-name: 'Terraform Cloudflare Plan/Apply Porduction'
+name: 'Terraform Cloudflare Destory Production'
 
 on:
   workflow_dispatch:
