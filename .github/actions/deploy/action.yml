@@ -32,11 +32,11 @@ runs:
     - name: Export Environment Variables
       shell: bash
       run: |
-        export AWS_ACCOUNT_ID=${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
-        export AWS_ACCESS_KEY_ID=${{ inputs.CLOUDFLARE_ACCESS_KEY_ID }}
-        export AWS_SECRET_ACCESS_KEY=${{ inputs.CLOUDFLARE_SECRET_ACCESS_KEY }}
-        export CLOUDFLARE_API_TOKEN=${{ inputs.CLOUDFLARE_API_TOKEN }}
-        export CLOUDFLARE_ACCOUNT_ID=${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
+        echo "export AWS_ACCOUNT_ID=${{ inputs.CLOUDFLARE_ACCOUNT_ID }}" >> $GITHUB_ENV
+        echo "export AWS_ACCESS_KEY_ID=${{ inputs.CLOUDFLARE_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+        echo "export AWS_SECRET_ACCESS_KEY=${{ inputs.CLOUDFLARE_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+        echo "export CLOUDFLARE_API_TOKEN=${{ inputs.CLOUDFLARE_API_TOKEN }}" >> $GITHUB_ENV
+        echo "export CLOUDFLARE_ACCOUNT_ID=${{ inputs.CLOUDFLARE_ACCOUNT_ID }}" >> $GITHUB_ENV
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
