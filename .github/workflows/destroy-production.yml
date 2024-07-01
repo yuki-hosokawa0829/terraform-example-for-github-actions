@@ -11,7 +11,7 @@ jobs:
     - name: Unknown Branch
       run: exit 1
 
-  terraform-cf-deploy:
+  terraform-cf-destroy:
     runs-on: ubuntu-latest
     environment: production
     if: ${{ startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/main' || github.base_ref == 'refs/heads/main'}}
