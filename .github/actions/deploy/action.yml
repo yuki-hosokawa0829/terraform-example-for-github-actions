@@ -6,22 +6,6 @@ inputs:
     description: 'The environment to deploy to'
     required: true
 
-  BACKEND_ENDPOINT:
-    description: 'The backend endpoint'
-    required: true
-
-  BACKEND_BUCKET:
-    description: 'The backend bucket'
-    required: true
-
-  BACKEND_KEY:
-    description: 'The backend key'
-    required: true
-
-  BACKEND_REGION:
-    description: 'The backend region'
-    required: true
-
   CLOUDFLARE_API_TOKEN:
     description: 'The Cloudflare API token'
     required: true
@@ -34,9 +18,25 @@ inputs:
     description: 'The Cloudflare account ID'
     required: true
 
+  CLOUDFLARE_ACCESS_KEY_ID:
+    description: 'The Cloudflare access key ID'
+    required: true
+
+  CLOUDFLARE_SECRET_ACCESS_KEY:
+    description: 'The Cloudflare secret access key'
+    required: true
+
 runs:
   using: 'composite'
   steps:
+    - name: Export Environment Variables
+      shell: bash
+      run: |
+        export AWS_ACCOUNT_ID=${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
+        export AWS_ACCESS_KEY_ID=${{ inputs.CLOUDFLARE_ACCESS_KEY_ID }}
+        export AWS_SECRET_ACCESS_KEY=${{ inputs.CLOUDFLARE_SECRET_ACCESS_KEY }}
+        export CLOUDFLARE_API_TOKEN=${{ inputs.CLOUDFLARE_API_TOKEN }}
+        export CLOUDFLARE_ACCOUNT_ID=${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -47,10 +47,6 @@ runs:
     - name: Terraform Init
       shell: bash
       env:
-        BACKEND_ENDPOINT: ${{ inputs.BACKEND_ENDPOINT }}
-        BACKEND_BUCKET: ${{ inputs.BACKEND_BUCKET }}
-        BACKEND_KEY: ${{ inputs.BACKEND_KEY }}
-        BACKEND_REGION: ${{ inputs.BACKEND_REGION }}
         ENVIROMENT: ${{ inputs.ENVIRONMENT }}
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
@@ -58,10 +54,6 @@ runs:
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} init \
         #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} init \
-        -backend-config="endpoint=${BACKEND_ENDPOINT}" \
-        -backend-config="bucket=${BACKEND_BUCKET}" \
-        -backend-config="key=${BACKEND_KEY}" \
-        -backend-config="region=${BACKEND_REGION}" \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
@@ -76,10 +68,6 @@ runs:
     - name: Terraform Plan
       shell: bash
       env:
-        BACKEND_ENDPOINT: ${{ inputs.BACKEND_ENDPOINT }}
-        BACKEND_BUCKET: ${{ inputs.BACKEND_BUCKET }}
-        BACKEND_KEY: ${{ inputs.BACKEND_KEY }}
-        BACKEND_REGION: ${{ inputs.BACKEND_REGION }}
         ENVIROMENT: ${{ inputs.ENVIRONMENT }}
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
@@ -87,10 +75,6 @@ runs:
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} plan -no-color \
         #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} plan -no-color \
-        -var backend_endpoint=${BACKEND_ENDPOINT} \
-        -var backend_bucket=${BACKEND_BUCKET} \
-        -var backend_key=${BACKEND_KEY} \
-        -var backend_region=${BACKEND_REGION} \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
@@ -100,10 +84,6 @@ runs:
     - name: Terraform Apply
       shell: bash
       env:
-        BACKEND_ENDPOINT: ${{ inputs.BACKEND_ENDPOINT }}
-        BACKEND_BUCKET: ${{ inputs.BACKEND_BUCKET }}
-        BACKEND_KEY: ${{ inputs.BACKEND_KEY }}
-        BACKEND_REGION: ${{ inputs.BACKEND_REGION }}
         ENVIROMENT: ${{ inputs.ENVIRONMENT }}
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
@@ -111,10 +91,6 @@ runs:
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} apply -auto-approve \
         #terraform -chdir=terraform/envs/${{ inputs.ENVIRONMENT }} apply -auto-approve \
-        -var backend_endpoint=${BACKEND_ENDPOINT} \
-        -var backend_bucket=${BACKEND_BUCKET} \
-        -var backend_key=${BACKEND_KEY} \
-        -var backend_region=${BACKEND_REGION} \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
