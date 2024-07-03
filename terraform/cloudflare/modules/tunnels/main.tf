@@ -31,12 +31,29 @@ resource "cloudflare_record" "http_app" {
 
 # Creates the configuration for the tunnel.
 resource "cloudflare_tunnel_config" "auto_tunnel" {
+  count      = var.prefix == "dev" || "stg" ? 1 : 0
   tunnel_id  = cloudflare_tunnel.auto_tunnel.id
   account_id = var.cloudflare_account_id
   config {
     ingress_rule {
       hostname = cloudflare_record.http_app.hostname
       service  = "https://www.${var.prefix}.yukihosokawa.com"
+    }
+    ingress_rule {
+      service = "http_status:404"
+    }
+  }
+}
+
+# Creates the configuration for the tunnel.
+resource "cloudflare_tunnel_config" "auto_tunnel_prod" {
+  count      = var.prefix == "prd" ? 1 : 0
+  tunnel_id  = cloudflare_tunnel.auto_tunnel.id
+  account_id = var.cloudflare_account_id
+  config {
+    ingress_rule {
+      hostname = cloudflare_record.http_app.hostname
+      service  = "https://www.yukihosokawa.com"
     }
     ingress_rule {
       service = "http_status:404"
