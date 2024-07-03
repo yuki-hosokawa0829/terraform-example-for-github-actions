@@ -36,7 +36,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
   config {
     ingress_rule {
       hostname = cloudflare_record.http_app.hostname
-      service  = "http://httpbin:8080"
+      service  = "https://www.${var.prefix}.yukihosokawa.com"
     }
     ingress_rule {
       service = "http_status:404"

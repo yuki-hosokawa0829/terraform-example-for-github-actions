@@ -19,15 +19,18 @@ terraform {
   }
 }
 
-
-
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
+}
+
+locals {
+  prefix = "dev"
 }
 
 module "cloudflare_tunnel" {
   source                = "../../modules/tunnels"
   environment           = var.environment
+  prefix                = local.prefix
   cloudflare_zone_id    = var.cloudflare_zone_id
   cloudflare_account_id = var.cloudflare_account_id
 }

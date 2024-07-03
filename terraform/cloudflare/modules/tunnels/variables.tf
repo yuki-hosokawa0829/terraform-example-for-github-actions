@@ -3,6 +3,11 @@ variable "environment" {
   type        = string
 }
 
+variable "prefix" {
+  description = "The prefix to use for resources."
+  type        = string
+}
+
 variable "cloudflare_zone_id" {
   description = "Zone ID for your domain"
   type        = string
