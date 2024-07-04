@@ -38,6 +38,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
     ingress_rule {
       hostname = cloudflare_record.http_app.hostname
       service  = "https://www.${var.prefix}.yukihosokawa.com"
+      # service  = "https://www.${var.prefix}.${var.domain_name}"
     }
     ingress_rule {
       service = "http_status:404"
@@ -54,6 +55,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel_prod" {
     ingress_rule {
       hostname = cloudflare_record.http_app.hostname
       service  = "https://www.yukihosokawa.com"
+      # service  = "https://www.${var.domain_name}"
     }
     ingress_rule {
       service = "http_status:404"
