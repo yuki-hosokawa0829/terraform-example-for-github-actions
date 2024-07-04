@@ -20,6 +20,10 @@ resource "cloudflare_tunnel" "auto_tunnel" {
   secret     = base64sha256(random_password.tunnel_secret.result)
 }
 
+output "secret" {
+  value = cloudflare_tunnel.auto_tunnel.secret
+}
+
 # Creates the CNAME record that routes http_app.${var.cloudflare_zone} to the tunnel.
 resource "cloudflare_record" "http_app" {
   zone_id = var.cloudflare_zone_id
