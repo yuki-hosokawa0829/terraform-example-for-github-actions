@@ -34,3 +34,7 @@ module "cloudflare_tunnel" {
   cloudflare_zone_id    = var.cloudflare_zone_id
   cloudflare_account_id = var.cloudflare_account_id
 }
+
+output "secret" {
+  value = module.cloudflare_tunnel.secret
+}
