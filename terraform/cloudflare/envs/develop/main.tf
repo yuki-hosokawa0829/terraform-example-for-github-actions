@@ -37,5 +37,5 @@ module "cloudflare_tunnel" {
 
 output "secret" {
   value = module.cloudflare_tunnel.secret
-  sensitive = false
+  sensitive = true
 }
