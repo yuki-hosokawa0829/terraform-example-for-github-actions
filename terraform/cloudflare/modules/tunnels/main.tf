@@ -25,7 +25,7 @@ output "secret" {
 }
 
 # Creates the CNAME record that routes www.${var.prefix}.${var.domain_name} to the tunnel.
-resource "cloudflare_record" "cname_prod" {
+resource "cloudflare_record" "cname" {
   count   = var.prefix == "dev" || var.prefix == "stg" ? 1 : 0
   zone_id = var.cloudflare_zone_id
   name    = "www.${var.prefix}.${var.environment}"
