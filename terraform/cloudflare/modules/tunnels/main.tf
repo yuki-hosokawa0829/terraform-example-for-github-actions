@@ -28,7 +28,7 @@ output "secret" {
 resource "cloudflare_record" "cname" {
   count   = var.prefix == "dev" || var.prefix == "stg" ? 1 : 0
   zone_id = var.cloudflare_zone_id
-  name    = "www.${var.prefix}.${var.environment}"
+  name    = "www.${var.prefix}"
   value   = cloudflare_tunnel.auto_tunnel.cname
   type    = "CNAME"
   proxied = true
@@ -38,7 +38,7 @@ resource "cloudflare_record" "cname" {
 resource "cloudflare_record" "cname_prod" {
   count   = var.prefix == "prd" ? 1 : 0
   zone_id = var.cloudflare_zone_id
-  name    = "www.${var.environment}"
+  name    = "www.${var.prefix}"
   value   = cloudflare_tunnel.auto_tunnel.cname
   type    = "CNAME"
   proxied = true
