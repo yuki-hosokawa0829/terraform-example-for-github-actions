@@ -24,10 +24,21 @@ output "secret" {
   value = cloudflare_tunnel.auto_tunnel.secret
 }
 
-# Creates the CNAME record that routes http_app.${var.cloudflare_zone} to the tunnel.
-resource "cloudflare_record" "http_app" {
+# Creates the CNAME record that routes www.${var.prefix}.${var.domain_name} to the tunnel.
+resource "cloudflare_record" "cname_prod" {
+  count   = var.prefix == "dev" || var.prefix == "stg" ? 1 : 0
   zone_id = var.cloudflare_zone_id
-  name    = "http_app_${var.environment}"
+  name    = "www.${var.prefix}.${var.environment}"
+  value   = cloudflare_tunnel.auto_tunnel.cname
+  type    = "CNAME"
+  proxied = true
+}
+
+# Creates the CNAME record that routes www.${var.domain_name} to the tunnel.
+resource "cloudflare_record" "cname_prod" {
+  count   = var.prefix == "prd" ? 1 : 0
+  zone_id = var.cloudflare_zone_id
+  name    = "www.${var.environment}"
   value   = cloudflare_tunnel.auto_tunnel.cname
   type    = "CNAME"
   proxied = true
