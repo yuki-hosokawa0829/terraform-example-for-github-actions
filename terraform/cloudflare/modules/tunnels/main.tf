@@ -52,7 +52,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
   config {
     ingress_rule {
       hostname = cloudflare_record.cname[count.index].hostname
-      service  = "https://www.${var.prefix}.${var.domain_name}"
+      service  = "http://www.${var.prefix}.${var.domain_name}"
     }
     ingress_rule {
       service = "http_status:404"
@@ -68,7 +68,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel_prod" {
   config {
     ingress_rule {
       hostname = cloudflare_record.cname_prod[count.index].hostname
-      service  = "https://www.${var.domain_name}"
+      service  = "http://www.${var.domain_name}"
     }
     ingress_rule {
       service = "http_status:404"
