@@ -18,3 +18,8 @@ variable "cloudflare_account_id" {
   type        = string
   sensitive   = true
 }
+
+variable "domain_name" {
+  description = "The domain name to use for the tunnel"
+  type        = string
+}

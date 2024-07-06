@@ -42,6 +42,10 @@ inputs:
     description: 'The Cloudflare secret access key'
     required: true
 
+  DOMAIN_NAME:
+    description: 'The domain name'
+    required: true
+
 runs:
   using: 'composite'
   steps:
@@ -68,16 +72,18 @@ runs:
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
-        BACKEND_ENDPOINT: ${{ inputs.BACKEND_ENDPOINT }}
-        BACKEND_BUCKET: ${{ inputs.BACKEND_BUCKET }}
-        BACKEND_KEY: ${{ inputs.BACKEND_KEY }}
-        BACKEND_REGION: ${{ inputs.BACKEND_REGION }}
+        DOMAIN_NAME: ${{ inputs.DOMAIN_NAME }}
+        #BACKEND_ENDPOINT: ${{ inputs.BACKEND_ENDPOINT }}
+        #BACKEND_BUCKET: ${{ inputs.BACKEND_BUCKET }}
+        #BACKEND_KEY: ${{ inputs.BACKEND_KEY }}
+        #BACKEND_REGION: ${{ inputs.BACKEND_REGION }}
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} init \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
-        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
+        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
+        -var domain_name=$DOMAIN_NAME
 
     - name: Terraform Plan
       shell: bash
@@ -86,13 +92,15 @@ runs:
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
+        DOMAIN_NAME: ${{ inputs.DOMAIN_NAME }}
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} plan -destory \
         -no-color \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
-        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
+        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
+        -var domain_name=$DOMAIN_NAME
 
     # Terraform Destroy
     - name: Terraform Destroy
@@ -102,10 +110,12 @@ runs:
         CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
+        DOMAIN_NAME: ${{ inputs.DOMAIN_NAME }}
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} destroy \
         -auto-approve \
         -var environment=${{ inputs.ENVIRONMENT }} \
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
-        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID
+        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
+        -var domain_name=$DOMAIN_NAME

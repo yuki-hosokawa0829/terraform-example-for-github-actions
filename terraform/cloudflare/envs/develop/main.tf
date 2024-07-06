@@ -33,6 +33,7 @@ module "cloudflare_tunnel" {
   prefix                = local.prefix
   cloudflare_zone_id    = var.cloudflare_zone_id
   cloudflare_account_id = var.cloudflare_account_id
+  domain_name           = var.domain_name
 }
 
 output "secret" {
