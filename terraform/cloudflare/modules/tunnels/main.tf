@@ -51,7 +51,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
   account_id = var.cloudflare_account_id
   config {
     ingress_rule {
-      hostname = cloudflare_record.http_app.hostname
+      hostname = cloudflare_record.cname.hostname
       service  = "https://www.${var.prefix}.${var.domain_name}"
     }
     ingress_rule {
@@ -67,7 +67,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel_prod" {
   account_id = var.cloudflare_account_id
   config {
     ingress_rule {
-      hostname = cloudflare_record.http_app.hostname
+      hostname = cloudflare_record.cname_prod.hostname
       service  = "https://www.${var.domain_name}"
     }
     ingress_rule {
