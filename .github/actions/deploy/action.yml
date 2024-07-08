@@ -111,7 +111,7 @@ runs:
       shell: bash
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output
-        terraform_secret=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output -json)
+        tunnel_secret=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output -json)
         echo "tunnel_secret=$tunnel_secret" >> $GITHUB_OUTPUT
 
     - name: Test Output
