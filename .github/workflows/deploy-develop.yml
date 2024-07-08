@@ -29,7 +29,7 @@ jobs:
     - name: Deploy
       uses: ./.github/actions/deploy
       with:
-        CLIENT_ID: ${{ secrets.CLIENT_ID_DEVELOP }}
+        CLIENT_ID: ${{ secrets.CLIENT_ID }}
         TENANT_ID: ${{ secrets.TENANT_ID }}
         SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
         ENVIRONMENT: ${{ vars.ENVIRONMENT }}
@@ -39,3 +39,5 @@ jobs:
         CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
         CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
         DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+        RESOURCE_GROUP_NAME: ${{ vars.RESOURCE_GROUP_NAME }}
+        AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME }}

@@ -2,7 +2,7 @@ name: 'Deploy'
 description: 'Deploy Terraform configuration to Cloudflare'
 
 inputs:
-  CLIENT_ID_DEVELOP:
+  CLIENT_ID:
     description: 'The client ID of the service principal used to login to Azure'
     required: true
 
@@ -40,6 +40,14 @@ inputs:
 
   DOMAIN_NAME:
     description: 'The domain name'
+    required: true
+
+  RESOURCE_GROUP_NAME:
+    description: 'The name of the resource group for AKS'
+    required: true
+
+  AKS_CLUSTER_NAME:
+    description: 'The name of the AKS cluster'
     required: true
 
 runs:
