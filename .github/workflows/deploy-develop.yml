@@ -26,10 +26,6 @@ jobs:
       uses: ./.github/actions/deploy
       with:
         ENVIRONMENT: ${{ vars.ENVIRONMENT }}
-        #BACKEND_ENDPOINT: ${{ secrets.BACKEND_ENDPOINT }}
-        #BACKEND_BUCKET: ${{ vars.BACKEND_BUCKET }}
-        #BACKEND_KEY: ${{ vars.BACKEND_KEY }}
-        #BACKEND_REGION: ${{ vars.BACKEND_REGION }}
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

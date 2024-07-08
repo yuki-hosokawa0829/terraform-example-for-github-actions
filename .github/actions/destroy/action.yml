@@ -6,22 +6,6 @@ inputs:
     description: 'The environment to deploy to'
     required: true
 
-  BACKEND_ENDPOINT:
-    description: 'The backend endpoint'
-    required: true
-
-  BACKEND_BUCKET:
-    description: 'The backend bucket'
-    required: true
-
-  BACKEND_KEY:
-    description: 'The backend key'
-    required: true
-
-  BACKEND_REGION:
-    description: 'The backend region'
-    required: true
-
   CLOUDFLARE_API_TOKEN:
     description: 'The Cloudflare API token'
     required: true
@@ -49,6 +33,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    # Set Environment Variables for Cloudflare R2 Storage as Backend
     - name: Set Environment Variables
       shell: bash
       run: |
@@ -73,10 +58,6 @@ runs:
         CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
         DOMAIN_NAME: ${{ inputs.DOMAIN_NAME }}
-        #BACKEND_ENDPOINT: ${{ inputs.BACKEND_ENDPOINT }}
-        #BACKEND_BUCKET: ${{ inputs.BACKEND_BUCKET }}
-        #BACKEND_KEY: ${{ inputs.BACKEND_KEY }}
-        #BACKEND_REGION: ${{ inputs.BACKEND_REGION }}
       run: |
         terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} init \
         -var environment=${{ inputs.ENVIRONMENT }} \
