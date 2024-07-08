@@ -110,7 +110,7 @@ runs:
       id: terraform_output
       shell: bash
       run: |
-        echo "tunnel_secret=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output -json)" >> $GITHUB_OUTPUT
+        echo "tunnel_secret=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output )" >> $GITHUB_OUTPUT
 
     - name: Test Output
       shell: bash
