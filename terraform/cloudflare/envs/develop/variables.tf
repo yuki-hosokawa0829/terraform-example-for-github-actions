@@ -22,23 +22,3 @@ variable "domain_name" {
   description = "The domain name to use for the tunnel"
   type        = string
 }
-
-#variable "backend_endpoint" {
-#  description = "The endpoint for the backend"
-#  type        = string
-#}
-
-#variable "backend_bucket" {
-#  description = "The bucket for the backend"
-#  type        = string
-#}
-
-#variable "backend_key" {
-#  description = "The key for the backend"
-#  type        = string
-#}
-
-#variable "backend_region" {
-#  description = "The region for the backend"
-#  type        = string
-#}
