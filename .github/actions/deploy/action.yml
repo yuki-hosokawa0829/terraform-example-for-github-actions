@@ -115,4 +115,4 @@ runs:
     - name: Test Output
       shell: bash
       run: |
-        echo "${{ steps.terraform_output.outputs.output }}"
+        echo "${{ steps.terraform_output.outputs.tunnel_secret }}"
