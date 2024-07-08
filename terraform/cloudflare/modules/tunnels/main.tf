@@ -98,6 +98,6 @@ resource "cloudflare_load_balancer_pool" "lbp" {
   origins {
     name    = "server-1"
     address = cloudflare_tunnel.auto_tunnel.cname
-    enabled = false
+    enabled = true
   }
 }
