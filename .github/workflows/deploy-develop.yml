@@ -5,6 +5,10 @@ on:
     branches:
     - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -25,6 +29,9 @@ jobs:
     - name: Deploy
       uses: ./.github/actions/deploy
       with:
+        CLIENT_ID: ${{ secrets.CLIENT_ID_DEVELOP }}
+        TENANT_ID: ${{ secrets.TENANT_ID }}
+        SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
         ENVIRONMENT: ${{ vars.ENVIRONMENT }}
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}

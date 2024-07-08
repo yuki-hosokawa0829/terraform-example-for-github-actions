@@ -2,6 +2,18 @@ name: 'Deploy'
 description: 'Deploy Terraform configuration to Cloudflare'
 
 inputs:
+  CLIENT_ID_DEVELOP:
+    description: 'The client ID of the service principal used to login to Azure'
+    required: true
+
+  TENANT_ID:
+    description: 'The Azure AD tenant ID'
+    required: true
+
+  SUBSCRIPTION_ID:
+    description: 'The Azure subscription ID'
+    required: true
+
   ENVIRONMENT:
     description: 'The environment to deploy to'
     required: true
@@ -105,16 +117,38 @@ runs:
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
         -var domain_name=$DOMAIN_NAME
-    # Test
+
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ inputs.CLIENT_ID_DEVELOP }}
+        tenant-id: ${{ inputs.TENANT_ID }}
+        subscription-id: ${{ inputs.SUBSCRIPTION_ID }}
+
+    - name: Set AKS Credentials
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: ${{ inputs.RESOURCE_GROUP_NAME }}
+        cluster-name: ${{ inputs.AKS_CLUSTER_NAME }}
+
+    # Set Tunnel Secret and Tunnel ID as Variable
     - name: Terraform Output
       id: terraform_output
       shell: bash
       run: |
-        #terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output -json > tunnel_secret.json
-        tunnel_secret=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output -json | jq -r '.secret.value')
+        tunnel_secret=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output -json secret | jq -r '.secret.value')
+        tunnel_id=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output tunnel_id)
         echo "tunnel_secret=$tunnel_secret" >> $GITHUB_OUTPUT
+        echo "tunnel_id=$tunnel_id" >> $GITHUB_OUTPUT
 
-    - name: Test Output
+    # Set Tunnel Credentials
+    - name: Set Tunnel Credentials
       shell: bash
       run: |
-        echo "${{ steps.terraform_output.outputs.tunnel_secret }}"
+        credentials=$(cat ./manifest/credential/credential.json | \
+        sed -e "s/<AccountTag>/${{ inputs.CLOUDFLARE_ACCOUNT_ID }}/g" | \
+        sed -e "s/<TunnelSecret>/${{ steps.terraform_output.outputs.tunnel_secret }}/g" | \
+        sed -e "s/<TunnelID>/${{ steps.terraform_output.outputs.tunnel_id }}/g")
+        echo "$credentials" > ./manifest/credential/credential.json
+        # Test
+        cat ./manifest/credential/credential.json
