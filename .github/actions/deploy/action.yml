@@ -129,7 +129,7 @@ runs:
     - name: Azure Login
       uses: azure/login@v2
       with:
-        client-id: ${{ inputs.CLIENT_ID_DEVELOP }}
+        client-id: ${{ inputs.CLIENT_ID }}
         tenant-id: ${{ inputs.TENANT_ID }}
         subscription-id: ${{ inputs.SUBSCRIPTION_ID }}
 
