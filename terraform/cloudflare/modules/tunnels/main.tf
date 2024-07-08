@@ -20,10 +20,6 @@ resource "cloudflare_tunnel" "auto_tunnel" {
   secret     = base64sha256(random_password.tunnel_secret.result)
 }
 
-output "secret" {
-  value = cloudflare_tunnel.auto_tunnel.secret
-}
-
 # Creates the CNAME record that routes www.${var.prefix}.${var.domain_name} to the tunnel.
 resource "cloudflare_record" "cname" {
   count   = var.prefix == "dev" || var.prefix == "stg" ? 1 : 0
