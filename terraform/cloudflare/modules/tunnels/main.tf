@@ -74,7 +74,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel_prod" {
 
 resource "cloudflare_load_balancer" "lb" {
   zone_id          = var.cloudflare_zone_id
-  name             = "lb-${var.environment}"
+  name             = "www.${var.environment}.${var.domain_name}"
   fallback_pool_id = cloudflare_load_balancer_pool.lbp.id
   default_pool_ids = [cloudflare_load_balancer_pool.lbp.id]
   proxied          = true
@@ -94,7 +94,7 @@ resource "cloudflare_load_balancer" "lb" {
 
 resource "cloudflare_load_balancer_pool" "lbp" {
   account_id = var.cloudflare_account_id
-  name = "lbp-${var.environment}.${var.domain_name}"
+  name = "lbp-${var.environment}"
   origins {
     name    = "server-1"
     address = cloudflare_tunnel.auto_tunnel.cname
