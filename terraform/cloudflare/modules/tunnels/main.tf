@@ -48,7 +48,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
   config {
     ingress_rule {
       hostname = cloudflare_record.cname[count.index].hostname
-      service  = "https://20.27.208.91"
+      service  = "http://10.0.243.185"
     }
     ingress_rule {
       service = "http_status:404"
