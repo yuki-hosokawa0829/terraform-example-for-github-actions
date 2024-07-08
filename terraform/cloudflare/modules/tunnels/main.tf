@@ -22,7 +22,6 @@ resource "cloudflare_tunnel" "auto_tunnel" {
 
 output "secret" {
   value = cloudflare_tunnel.auto_tunnel.secret
-  sensitive = true
 }
 
 # Creates the CNAME record that routes www.${var.prefix}.${var.domain_name} to the tunnel.
