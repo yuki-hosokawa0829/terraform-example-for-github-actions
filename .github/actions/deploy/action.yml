@@ -151,14 +151,14 @@ runs:
         echo "tunnel_id=$tunnel_id" >> $GITHUB_ENV
 
     # Set Tunnel Name
-    - name: Set Tunnel Name
-      shell: bash
-      run: |
-        #cloudflared=$(cat ./manifest/container/cloudflared.yaml | \
-        #sed "s/<TunnelName>/${{ env.tunnel_name }}/g")
-        #echo "$cloudflared" > ./manifest/container/cloudflared.yaml
-        sed -i 's/<TunnelName>/${{ env.tunnel_name }}/g' ./manifest/container/cloudflared.yaml > ./manifest/container/cloudflared.yaml
-        cat ./manifest/container/cloudflared.yaml
+    #- name: Set Tunnel Name
+    #  shell: bash
+    #  run: |
+    #    #cloudflared=$(cat ./manifest/container/cloudflared.yaml | \
+    #    #sed "s/<TunnelName>/${{ env.tunnel_name }}/g")
+    #    #echo "$cloudflared" > ./manifest/container/cloudflared.yaml
+    #    sed -i 's/<TunnelName>/${{ env.tunnel_name }}/g' ./manifest/container/cloudflared.yaml > ./manifest/container/cloudflared.yaml
+    #    cat ./manifest/container/cloudflared.yaml
 
     # Set Tunnel Credentials
     - name: Set Tunnel Credentials
