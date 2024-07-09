@@ -157,7 +157,7 @@ runs:
       run: |
         # Set Cloudflare Tunnel Name
         cloudflared=$(cat ./manifest/container/cloudflared.yaml | \
-        sed -e "s/<TunnelName>/${{ steps.terraform_output.outputs.tunnel_name }}/g")
+        sed "s/<TunnelName>/${{ steps.terraform_output.outputs.tunnel_name }}/g")
         echo "$cloudflared" > ./manifest/container/cloudflared.yaml
         # Set Cloudflare Tunnel Credentials
         credentials=$(cat ./manifest/credential/credential.json | \
