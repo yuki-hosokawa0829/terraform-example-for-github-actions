@@ -71,25 +71,6 @@ runs:
         -var domain_name=$DOMAIN_NAME \
         -var cluster_ip=$CLUSTER_IP
 
-    - name: Terraform Plan
-      shell: bash
-      env:
-        ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-        CLOUDFLARE_API_TOKEN: ${{ inputs.CLOUDFLARE_API_TOKEN }}
-        CLOUDFLARE_ZONE_ID: ${{ inputs.CLOUDFLARE_ZONE_ID }}
-        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
-        DOMAIN_NAME: ${{ inputs.DOMAIN_NAME }}
-        CLUSTER_IP: ${{ inputs.CLUSTER_IP }}
-      run: |
-        terraform -chdir=cloudflare/envs/${{ inputs.ENVIRONMENT }} plan -destory \
-        -no-color \
-        -var environment=${{ inputs.ENVIRONMENT }} \
-        -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
-        -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
-        -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
-        -var domain_name=$DOMAIN_NAME \
-        -var cluster_ip=$CLUSTER_IP
-
     # Terraform Destroy
     - name: Terraform Destroy
       shell: bash
