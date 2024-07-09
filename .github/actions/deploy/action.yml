@@ -139,13 +139,15 @@ runs:
         resource-group: ${{ inputs.RESOURCE_GROUP_NAME }}
         cluster-name: ${{ inputs.AKS_CLUSTER_NAME }}
 
-    # Set Tunnel Secret and Tunnel ID as Variable
+    # Set Terraform Output as Variable
     - name: Terraform Output
       id: terraform_output
       shell: bash
       run: |
+        tunnel_name=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output tunnel_name)
         tunnel_secret=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output secret)
         tunnel_id=$(terraform -chdir=terraform/cloudflare/envs/${{ inputs.ENVIRONMENT }} output tunnel_id)
+        echo "tunnel_name=$tunnel_name" >> $GITHUB_OUTPUT
         echo "tunnel_secret=$tunnel_secret" >> $GITHUB_OUTPUT
         echo "tunnel_id=$tunnel_id" >> $GITHUB_OUTPUT
 
@@ -153,10 +155,25 @@ runs:
     - name: Set Tunnel Credentials
       shell: bash
       run: |
+        # Set Cloudflare Tunnel Name
+        cloudflared=$(cat ./manifest/container/cloudflared.yaml | \
+        sed -e "s/<TunnelName>/${{ steps.terraform_output.outputs.tunnel_name }}/g")
+        echo "$cloudflared" > ./manifest/container/cloudflared.yaml
+        # Set Cloudflare Tunnel Credentials
         credentials=$(cat ./manifest/credential/credential.json | \
         sed -e "s/<AccountTag>/${{ inputs.CLOUDFLARE_ACCOUNT_ID }}/g" | \
         sed -e "s/<TunnelSecret>/${{ steps.terraform_output.outputs.tunnel_secret }}/g" | \
         sed -e "s/<TunnelID>/${{ steps.terraform_output.outputs.tunnel_id }}/g")
         echo "$credentials" > ./manifest/credential/credential.json
-        # Test
-        cat ./manifest/credential/credential.json
+
+    # Set credentials for Cloudflare Tunnel
+    - name: Set Cloudflare Tunnel Credentials
+      shell: bash
+      run: |
+        kubectl create secret generic tunnel-credentials --from-file=credentials.json=./manifest/credential/credential.json
+
+    # Deploy Cloudflare Tunnel
+    - name: Deploy Cloudflare Tunnel
+      shell: bash
+      run: |
+        kubectl apply -f ./manifest/container/cloudflared.yaml
