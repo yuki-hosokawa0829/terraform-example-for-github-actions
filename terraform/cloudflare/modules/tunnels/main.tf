@@ -48,7 +48,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
   config {
     ingress_rule {
       hostname = cloudflare_record.cname[count.index].hostname
-      service  = "http://10.3.0.4"
+      service  = "http://10.0.85.113" # The private IP address of the AKS cluster
     }
     ingress_rule {
       service = "http_status:404"
