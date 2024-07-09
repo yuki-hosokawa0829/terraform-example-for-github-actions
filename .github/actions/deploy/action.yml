@@ -157,7 +157,7 @@ runs:
         #cloudflared=$(cat ./manifest/container/cloudflared.yaml | \
         #sed "s/<TunnelName>/${{ env.tunnel_name }}/g")
         #echo "$cloudflared" > ./manifest/container/cloudflared.yaml
-        sed -e "s/<TunnelName>/${{ env.tunnel_name }}/g" ./manifest/container/cloudflared.yaml > ./manifest/container/cloudflared.yaml
+        sed -i 's/<TunnelName>/${{ env.tunnel_name }}/g' ./manifest/container/cloudflared.yaml > ./manifest/container/cloudflared.yaml
 
     # Set Tunnel Credentials
     - name: Set Tunnel Credentials
