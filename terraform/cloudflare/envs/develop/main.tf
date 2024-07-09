@@ -36,6 +36,10 @@ module "cloudflare_tunnel" {
   domain_name           = var.domain_name
 }
 
+output "tunnel_name" {
+  value = module.cloudflare_tunnel.tunnel_name
+}
+
 output "secret" {
   value     = module.cloudflare_tunnel.cloudflare_tunnel_secret
   sensitive = true

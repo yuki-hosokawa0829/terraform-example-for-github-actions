@@ -1,3 +1,7 @@
+output "tunnel_name" {
+  value = cloudflare_tunnel.auto_tunnel.name
+}
+
 output "cloudflare_tunnel_secret" {
   value     = cloudflare_tunnel.auto_tunnel.secret
   sensitive = true
