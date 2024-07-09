@@ -89,7 +89,7 @@ runs:
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
-        -var domain_name=$DOMAIN_NAME
+        -var domain_name=$DOMAIN_NAME \
         -var cluster_ip=$CLUSTER_IP
 
     # Terraform Validate
@@ -113,7 +113,7 @@ runs:
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
-        -var domain_name=$DOMAIN_NAME
+        -var domain_name=$DOMAIN_NAME \
         -var cluster_ip=$CLUSTER_IP
 
     # Terraform Apply
@@ -133,7 +133,7 @@ runs:
         -var cloudflare_api_token=$CLOUDFLARE_API_TOKEN \
         -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
         -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
-        -var domain_name=$DOMAIN_NAME
+        -var domain_name=$DOMAIN_NAME \
         -var cluster_ip=$CLUSTER_IP
 
     - name: Azure Login
