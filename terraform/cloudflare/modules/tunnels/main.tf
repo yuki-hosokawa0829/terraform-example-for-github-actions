@@ -48,7 +48,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
   config {
     ingress_rule {
       hostname = cloudflare_record.cname[count.index].hostname
-      service  = "http://10.0.85.113" # The private IP address of the AKS cluster
+      service  = "http://${var.cluster_ip}" # The private IP address of the AKS cluster
     }
     ingress_rule {
       service = "http_status:404"
@@ -64,7 +64,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel_prod" {
   config {
     ingress_rule {
       hostname = cloudflare_record.cname_prod[count.index].hostname
-      service  = "http://www.${var.domain_name}"
+      service  = "http://${var.cluster_ip}" # The private IP address of the AKS cluster
     }
     ingress_rule {
       service = "http_status:404"

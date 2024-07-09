@@ -34,4 +34,5 @@ module "cloudflare_tunnel" {
   cloudflare_zone_id    = var.cloudflare_zone_id
   cloudflare_account_id = var.cloudflare_account_id
   domain_name           = var.domain_name
+  cluster_ip            = var.cluster_ip
 }

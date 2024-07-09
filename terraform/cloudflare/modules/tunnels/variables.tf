@@ -23,3 +23,8 @@ variable "domain_name" {
   description = "The domain name to use for the tunnel"
   type        = string
 }
+
+variable "cluster_ip" {
+  description = "The private IP address of the AKS cluster"
+  type        = string
+}
