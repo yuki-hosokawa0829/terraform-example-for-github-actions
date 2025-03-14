@@ -94,7 +94,7 @@ resource "cloudflare_load_balancer" "lb" {
 
 resource "cloudflare_load_balancer_pool" "lbp" {
   account_id = var.cloudflare_account_id
-  name = "lbp-${var.environment}"
+  name       = "lbp-${var.environment}"
   origins {
     name    = "server-1"
     address = cloudflare_tunnel.auto_tunnel.cname
